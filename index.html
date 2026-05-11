@@ -24,17 +24,20 @@
       --fontScale:1;
       --fs-base:calc(16px * var(--fontScale));
       --fs-label:calc(15px * var(--fontScale));
-      --fs-input:calc(16px * var(--fontScale));
+      --fs-input:max(16px, calc(16px * var(--fontScale)));
       --fs-title:calc(20px * var(--fontScale));
       --fs-small:calc(14px * var(--fontScale));
       --fs-appbar:calc(18px * var(--fontScale));
       --fs-btn:calc(17px * var(--fontScale));
       --fs-item:calc(15px * var(--fontScale));
-      --touch:calc(52px + ((var(--fontScale) - 1) * 8px));
+      --touch:max(50px, calc(52px + ((var(--fontScale) - 1) * 8px)));
       --radius:14px;
     }
 
-    html, body { height: 100%; }
+    html, body {
+      min-height: 100%;
+      min-height: 100dvh;
+    }
 
     html{
       -webkit-text-size-adjust:100%;
@@ -53,6 +56,7 @@
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
       touch-action:manipulation;
+      min-height:100dvh;
     }
 
     *{ box-sizing:border-box; }
@@ -64,7 +68,7 @@
       top:0;
       background:#111;
       color:#fff;
-      padding:16px;
+      padding:12px 16px;
       font-weight:900;
       font-size:var(--fs-appbar);
       z-index:100;
@@ -72,7 +76,7 @@
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      min-height:60px;
+      min-height:56px;
     }
 
     .envBanner{
@@ -96,6 +100,15 @@
     .appbarTitle{
       min-width:0;
       flex:1;
+      letter-spacing:0;
+    }
+
+    .appbarTitle small{
+      display:block;
+      margin-top:1px;
+      font-size:11px;
+      font-weight:800;
+      color:rgba(255,255,255,.7);
     }
 
     .appbarTools{
@@ -107,9 +120,9 @@
 
     .fontBtn,
     .gearBtn{
-      min-width:42px;
-      height:42px;
-      border-radius:12px;
+      min-width:38px;
+      height:38px;
+      border-radius:10px;
       border:1px solid rgba(255,255,255,.25);
       background:rgba(255,255,255,.08);
       color:#fff;
@@ -120,11 +133,25 @@
       -webkit-tap-highlight-color:transparent;
     }
 
+    .plateInput{
+      min-height:64px !important;
+      font-size:max(22px, calc(24px * var(--fontScale))) !important;
+      font-weight:950;
+      letter-spacing:2px;
+      text-align:center;
+      text-transform:uppercase;
+    }
+
+    .vehicleAutoCard{
+      background:#f7fbff;
+      border-color:#c9dcff;
+    }
+
     .wrap{
       padding:16px;
       max-width:760px;
       margin:0 auto;
-      padding-bottom:40px;
+      padding-bottom:calc(96px + env(safe-area-inset-bottom));
     }
 
     .card{
@@ -176,6 +203,7 @@
       -webkit-appearance:none;
       box-shadow:none;
       transition:border-color .15s ease, background-color .15s ease;
+      scroll-margin-bottom:120px;
     }
 
     select{
@@ -193,6 +221,7 @@
     input.auto,select.auto,textarea.auto{
       background:var(--auto);
       border-color:var(--autoLine);
+      font-weight:800;
     }
 
     input:disabled, select:disabled, textarea:disabled{
@@ -334,6 +363,7 @@
       padding:12px 16px calc(12px + env(safe-area-inset-bottom));
       z-index:120;
       backdrop-filter:saturate(140%) blur(6px);
+      box-shadow:0 -8px 20px rgba(0,0,0,.05);
     }
 
     .bottomInner{
@@ -693,7 +723,7 @@
 </head>
 <body>
   <div class="appbar">
-    <div class="appbarTitle">Ficha Mecânica</div>
+    <div class="appbarTitle">Ficha Mecânica<small id="appbarSub">Operacional</small></div>
 
     <div class="appbarTools">
       <button class="fontBtn" type="button" onclick="decreaseFontSize()" title="Diminuir fonte">A-</button>
@@ -727,11 +757,11 @@
       <input id="email" inputmode="email"/>
 
       <label>Placa (ABC1234 ou ABC1D23)</label>
-      <input id="placa" style="text-transform:uppercase" maxlength="7" />
+      <input id="placa" class="plateInput" maxlength="7" placeholder="ABC1D23" />
 
       <div id="plateWarnBox" class="warnBox hidden"></div>
 
-      <div id="vehiclePreviewCard" class="warnBox hidden" style="margin-top:12px">
+      <div id="vehiclePreviewCard" class="warnBox vehicleAutoCard hidden" style="margin-top:12px">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
           <div style="flex:1;min-width:0">
             <div style="font-weight:900;margin-bottom:8px">Conferência do veículo</div>
@@ -1049,6 +1079,8 @@
     if (banner) {
       banner.textContent = isLab ? `AMBIENTE DE TESTE - ${appEnv}` : '';
     }
+    const sub = $('appbarSub');
+    if (sub) sub.textContent = isLab ? 'Laboratório seguro' : 'Operacional';
   }
 
   function applyFontScale(scale){
@@ -1322,6 +1354,26 @@
     return cleanValue;
   }
 
+  function normalizeCatalogText_(txt){
+    return String(txt || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9]+/g, '')
+      .toLowerCase()
+      .trim();
+  }
+
+  function findCatalogOptionValue_(selectId, value){
+    const el = $(selectId);
+    const target = normalizeCatalogText_(value);
+    if (!el || !target) return '';
+
+    const exact = Array.from(el.options).find(o => normalizeCatalogText_(o.value || o.textContent) === target);
+    if (exact) return exact.value;
+
+    return '';
+  }
+
   function getMarcaOperacional_(){
     const selected = String($('marca').value || '').trim();
     if (selected) return selected;
@@ -1337,6 +1389,7 @@
     const versao = String($('versao').value || '').trim();
     const anoFab = String($('anoFabricacao').value || '').trim();
     const anoMod = String($('anoModeloSelect').value || '').trim();
+    const cor = String($('cor').value || '').trim();
 
     let modeloFinal = modelo;
     if (isOutroText(modelo)) {
@@ -1350,6 +1403,7 @@
     if (modeloFinal) linhas.push('<b>Modelo e versão:</b> ' + escapeHtml(modeloFinal));
     if (anoFab) linhas.push('<b>Ano fabricação:</b> ' + escapeHtml(anoFab));
     if (anoMod) linhas.push('<b>Ano modelo:</b> ' + escapeHtml(anoMod));
+    if (cor) linhas.push('<b>Cor:</b> ' + escapeHtml(cor));
 
     return linhas.join('<br>');
   }
@@ -1771,7 +1825,7 @@
         resetPlateSuggestionUI_();
         unlockVehicleFields_();
         refreshVehiclePreview_();
-        $('statusBasic').textContent = `App ${appVersion} | Catálogos: ${Object.keys(catalogs).length}`;
+        $('statusBasic').textContent = `App ${appVersion} | Ambiente: ${appEnv} | Catálogos: ${Object.keys(catalogs).length}`;
         return;
       }
 
@@ -1785,7 +1839,7 @@
   }
 
   function getVehicleFieldIds_(){
-    return ['marca','modelo','modeloOutro','versao','anoFabricacao','anoModeloSelect'];
+    return ['marca','modelo','modeloOutro','versao','anoFabricacao','anoModeloSelect','cor'];
   }
 
   function clearAutoClasses_(){
@@ -1826,6 +1880,7 @@
     $('versao').value = '';
     $('anoFabricacao').value = '';
     $('anoModeloSelect').value = '';
+    $('cor').value = '';
     $('modeloOutroWrap').classList.add('hidden');
     refreshVehiclePreview_();
   }
@@ -1947,6 +2002,16 @@
     if (s.anoModeloSugerido) {
       $('anoModeloSelect').value = String(s.anoModeloSugerido);
       $('anoModeloSelect').classList.add('auto');
+    }
+
+    if (s.corSugerida) {
+      const corCadastro = findCatalogOptionValue_('cor', s.corSugerida);
+      if (corCadastro) {
+        $('cor').value = corCadastro;
+      } else {
+        ensureSelectOption_('cor', s.corSugerida, s.corSugerida + ' (API)');
+      }
+      $('cor').classList.add('auto');
     }
 
     toggleOutroModelo();

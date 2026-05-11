@@ -559,6 +559,7 @@ function suggestVehicleFieldsFromPlate(input) {
         modeloOutroSugerido: '',
         anoFabricacaoSugerido: '',
         anoModeloSugerido: '',
+        corSugerida: '',
         versaoSugerida: '',
         fipeIdSugerido: ''
       },
@@ -586,6 +587,7 @@ function suggestVehicleFieldsFromPlate(input) {
       modeloOutroSugerido: modeloMatch.suggestedOutro || '',
       anoFabricacaoSugerido: plateResult.normalized.anoFabricacao || '',
       anoModeloSugerido: plateResult.normalized.anoModelo || '',
+      corSugerida: plateResult.normalized.extras?.cor || '',
       versaoSugerida: (plateResult.normalized.fipeOptions?.[0]?.versao) || '',
       fipeIdSugerido: (plateResult.normalized.fipeOptions?.[0]?.fipeId) || '',
       matchTipo: modeloMatch.matchTipo || '',

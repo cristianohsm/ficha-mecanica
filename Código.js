@@ -1877,6 +1877,7 @@ function getEnvironmentDiagnostics() {
     out.emailSettingsError = String(e && e.message ? e.message : e);
   }
 
+  Logger.log(JSON.stringify(out, null, 2));
   return out;
 }
 
@@ -1894,7 +1895,7 @@ function createLabCopiesFromCurrentConfig() {
     .getFileById(cfg.docTemplateId)
     .makeCopy(`Template Ficha Mecânica LAB ${stamp}`, root);
 
-  return {
+  const out = {
     ok: true,
     message: 'Cópias LAB criadas. Use estes IDs no projeto Apps Script LAB.',
     rootFolderId: root.getId(),
@@ -1902,6 +1903,8 @@ function createLabCopiesFromCurrentConfig() {
     pdfFolderId: pdfFolder.getId(),
     docTemplateId: templateCopy.getId()
   };
+  Logger.log(JSON.stringify(out, null, 2));
+  return out;
 }
 
 function createAndConfigureLabFromCurrentConfig() {
@@ -1910,12 +1913,14 @@ function createAndConfigureLabFromCurrentConfig() {
   }
 
   const ids = createLabCopiesFromCurrentConfig();
-  return configureLabEnvironment({
+  const out = configureLabEnvironment({
     spreadsheetId: ids.spreadsheetId,
     pdfFolderId: ids.pdfFolderId,
     docTemplateId: ids.docTemplateId,
     testEmailTo: getAppConfig_().testEmailTo
   });
+  Logger.log(JSON.stringify(out, null, 2));
+  return out;
 }
 
 function configureLabEnvironment(config) {
@@ -1948,7 +1953,9 @@ function configureLabEnvironment(config) {
   });
   clearCatalogsCache_();
 
-  return getEnvironmentDiagnostics();
+  const out = getEnvironmentDiagnostics();
+  Logger.log(JSON.stringify(out, null, 2));
+  return out;
 }
 
 // ===== AUTORIZAÇÃO =====

@@ -1,0 +1,3005 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#111111" />
+
+  <style>
+    :root{
+      --bg:#f6f6f6;
+      --card:#fff;
+      --text:#111;
+      --muted:#666;
+      --line:#e7e7e7;
+      --primary:#111;
+      --auto:#eef7ff;
+      --autoLine:#7fb0ff;
+      --warnBg:#fff8dd;
+      --warnLine:#ead48a;
+
+      --fontScale:1;
+      --fs-base:calc(16px * var(--fontScale));
+      --fs-label:calc(15px * var(--fontScale));
+      --fs-input:calc(16px * var(--fontScale));
+      --fs-title:calc(20px * var(--fontScale));
+      --fs-small:calc(14px * var(--fontScale));
+      --fs-appbar:calc(18px * var(--fontScale));
+      --fs-btn:calc(17px * var(--fontScale));
+      --fs-item:calc(15px * var(--fontScale));
+      --touch:calc(52px + ((var(--fontScale) - 1) * 8px));
+      --radius:14px;
+    }
+
+    html, body { height: 100%; }
+
+    html{
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-size:var(--fs-base);
+      line-height:1.45;
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      touch-action:manipulation;
+    }
+
+    *{ box-sizing:border-box; }
+
+    input, select, textarea, button{ font:inherit; }
+
+    .appbar{
+      position:sticky;
+      top:0;
+      background:#111;
+      color:#fff;
+      padding:16px;
+      font-weight:900;
+      font-size:var(--fs-appbar);
+      z-index:100;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      min-height:60px;
+    }
+
+    .appbarTitle{
+      min-width:0;
+      flex:1;
+    }
+
+    .appbarTools{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex:0 0 auto;
+    }
+
+    .fontBtn,
+    .gearBtn{
+      min-width:42px;
+      height:42px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      font-size:16px;
+      font-weight:900;
+      cursor:pointer;
+      flex:0 0 auto;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    .wrap{
+      padding:16px;
+      max-width:760px;
+      margin:0 auto;
+      padding-bottom:40px;
+    }
+
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      margin-bottom:16px;
+      box-shadow:none;
+      overflow:hidden;
+    }
+
+    .title{
+      font-weight:900;
+      font-size:var(--fs-title);
+      margin:0 0 14px;
+      line-height:1.25;
+    }
+
+    .sectionTitle{
+      font-size:17px;
+      font-weight:900;
+      margin:18px 0 8px;
+      color:#111;
+      line-height:1.3;
+    }
+
+    label{
+      display:block;
+      font-size:var(--fs-label);
+      font-weight:800;
+      color:#333;
+      margin:16px 0 8px;
+      line-height:1.35;
+    }
+
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea{
+      width:100%;
+      min-height:var(--touch);
+      padding:14px 16px;
+      border-radius:var(--radius);
+      border:1px solid #cfcfcf;
+      font-size:var(--fs-input);
+      background:#fff;
+      outline:none;
+      appearance:none;
+      -webkit-appearance:none;
+      box-shadow:none;
+      transition:border-color .15s ease, background-color .15s ease;
+    }
+
+    select{
+      background-image:
+        linear-gradient(45deg, transparent 50%, #555 50%),
+        linear-gradient(135deg, #555 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) calc(50% - 3px),
+        calc(100% - 12px) calc(50% - 3px);
+      background-size:6px 6px, 6px 6px;
+      background-repeat:no-repeat;
+      padding-right:38px;
+    }
+
+    input.auto,select.auto,textarea.auto{
+      background:var(--auto);
+      border-color:var(--autoLine);
+    }
+
+    input:disabled, select:disabled, textarea:disabled{
+      opacity:1;
+      color:#333;
+      background:#f3f7fb;
+      border-color:#cfd9e6;
+      cursor:not-allowed;
+    }
+
+    input[readonly]{
+      background:#f3f7fb;
+      border-color:#cfd9e6;
+      color:#111;
+      font-weight:800;
+    }
+
+    textarea{
+      resize:vertical;
+      min-height:132px;
+    }
+
+    input:focus,select:focus,textarea:focus{
+      border-color:#888;
+    }
+
+    .btn{
+      width:100%;
+      min-height:54px;
+      padding:14px 16px;
+      border-radius:14px;
+      border:0;
+      font-weight:900;
+      font-size:var(--fs-btn);
+      cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+    }
+
+    .btn[disabled]{
+      opacity:.6;
+      cursor:not-allowed;
+    }
+
+    .primary{background:#111;color:#fff}
+    .ghost{background:#fff;border:1px solid #111;color:#111}
+    .danger{background:#8d1d1d;color:#fff}
+
+    .muted{
+      font-size:14px;
+      color:#666;
+      margin-top:10px;
+      line-height:1.45;
+    }
+
+    .small{
+      font-size:var(--fs-small);
+      color:#666;
+      line-height:1.5;
+    }
+
+    .hidden{display:none}
+    .hr{height:1px;background:#eee;margin:14px 0}
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .row .btn{
+      flex:1;
+      min-width:120px;
+    }
+
+    .warnBox{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:12px;
+      background:var(--warnBg);
+      border:1px solid var(--warnLine);
+      font-size:14px;
+      line-height:1.55;
+    }
+
+    .secItem{
+      border:1px solid #e7e7e7;
+      border-radius:14px;
+      margin-top:12px;
+      background:#fff;
+      padding:16px;
+    }
+
+    .secHead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .badge{
+      font-size:13px;
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid #ddd;
+      white-space:nowrap;
+      font-weight:800;
+    }
+
+    .ok{background:#eaffea}
+    .warn{background:#fff2df}
+    .pend{background:#f3f3f3}
+
+    .inlineEditor{
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px solid #eee;
+    }
+
+    .inlineActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .inlineActions .btn{
+      flex:1;
+      min-width:140px;
+    }
+
+    .bottomBar{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      background:#f6f6f6;
+      border-top:1px solid var(--line);
+      padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+      z-index:120;
+      backdrop-filter:saturate(140%) blur(6px);
+    }
+
+    .bottomInner{
+      max-width:760px;
+      margin:0 auto;
+      display:flex;
+      gap:10px;
+    }
+
+    .bottomInner .btn{flex:1}
+
+    button{
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+    }
+
+    .itemsToolbar{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .itemsSearch{
+      width:100%;
+      min-height:50px;
+      padding:14px;
+      border-radius:12px;
+      border:1px solid #d4d4d4;
+      font-size:17px;
+      background:#fff;
+    }
+
+    .itemsMeta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      font-size:13px;
+      color:#666;
+    }
+
+    .itemsList{
+      margin-top:10px;
+      border:1px solid #e7e7e7;
+      border-radius:14px;
+      background:#fafafa;
+      max-height:340px;
+      overflow:auto;
+      padding:8px;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .itemChoice{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:13px;
+      border-radius:12px;
+      background:#fff;
+      border:1px solid #ededed;
+      margin-bottom:8px;
+      min-height:56px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-select:none;
+    }
+
+    .itemChoiceMark{
+      width:22px;
+      min-width:22px;
+      text-align:center;
+      opacity:.16;
+      font-weight:900;
+      font-size:16px;
+      color:#111;
+      flex:0 0 auto;
+    }
+
+    .itemChoiceText{
+      flex:1;
+      min-width:0;
+      font-size:var(--fs-item);
+      line-height:1.4;
+      color:#111;
+      word-break:break-word;
+    }
+
+    .itemChoice.on{
+      border-color:#111;
+      background:#f3f3f3;
+    }
+
+    .itemChoice.on .itemChoiceMark{
+      opacity:1;
+    }
+
+    .stackChoiceList{
+      margin-top:12px;
+    }
+
+    .stackChoiceItem{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:14px;
+      border-radius:14px;
+      background:#fff;
+      border:1px solid #e7e7e7;
+      margin-bottom:10px;
+      min-height:56px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-user-select:none;
+    }
+
+    .stackChoiceItemMark{
+      width:22px;
+      min-width:22px;
+      text-align:center;
+      opacity:.16;
+      font-weight:900;
+      font-size:16px;
+      color:#111;
+      flex:0 0 auto;
+    }
+
+    .stackChoiceItemText{
+      flex:1;
+      min-width:0;
+      font-size:var(--fs-item);
+      line-height:1.4;
+      color:#111;
+      word-break:break-word;
+    }
+
+    .stackChoiceItem.on{
+      border-color:#111;
+      background:#f3f3f3;
+    }
+
+    .stackChoiceItem.on .stackChoiceItemMark{
+      opacity:1;
+    }
+
+    .summaryBox{
+      margin-top:12px;
+      padding:14px;
+      border:1px solid #e7e7e7;
+      border-radius:12px;
+      background:#f8f8f8;
+    }
+
+    .summaryTitle{
+      font-size:13px;
+      font-weight:900;
+      color:#444;
+      text-transform:lowercase;
+      margin-bottom:6px;
+    }
+
+    .summaryText{
+      font-size:15px;
+      color:#333;
+      line-height:1.55;
+      text-transform:lowercase;
+      word-break:break-word;
+    }
+
+    .reviewBlock{
+      border:1px solid #e7e7e7;
+      border-radius:14px;
+      padding:14px;
+      background:#fff;
+      margin-top:12px;
+    }
+
+    .reviewLabel{
+      font-size:12px;
+      font-weight:900;
+      color:#666;
+      text-transform:uppercase;
+      margin-bottom:6px;
+      letter-spacing:.02em;
+    }
+
+    .reviewValue{
+      font-size:16px;
+      color:#111;
+      line-height:1.55;
+      word-break:break-word;
+    }
+
+    .reviewSectionCard{
+      border:1px solid #ececec;
+      border-radius:14px;
+      padding:14px;
+      margin-top:12px;
+      background:#fff;
+    }
+
+    .reviewSectionHead{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom:8px;
+    }
+
+    .reviewSectionName{
+      font-weight:900;
+      font-size:17px;
+    }
+
+    .successWrap{text-align:center;padding:18px 4px 8px}
+    .successEmoji{font-size:44px;line-height:1;margin-bottom:10px}
+    .successTitle{font-size:24px;font-weight:900;margin-bottom:8px}
+    .successText{font-size:16px;color:#444;line-height:1.6}
+
+    .quoteBox{
+      margin-top:18px;
+      padding:16px;
+      border-radius:14px;
+      background:#f8f8f8;
+      border:1px solid #e7e7e7;
+    }
+
+    .quoteText{
+      font-size:16px;
+      line-height:1.6;
+      color:#222;
+      font-style:italic;
+    }
+
+    .footerMini{
+      margin-top:18px;
+      font-size:12px;
+      color:#777;
+      line-height:1.5;
+      text-align:center;
+    }
+
+    .modalBack{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:9999;
+    }
+
+    .modal{
+      background:#fff;
+      width:100%;
+      max-width:760px;
+      max-height:90vh;
+      overflow-y:auto;
+      border-radius:20px;
+      padding:20px;
+      box-shadow:none;
+      border:1px solid var(--line);
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .modalHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:12px;
+      gap:12px;
+    }
+
+    .modalHead b{
+      font-size:20px;
+      line-height:1.25;
+    }
+
+    .x{
+      border:0;
+      background:#eee;
+      border-radius:12px;
+      padding:10px 14px;
+      font-weight:900;
+      font-size:16px;
+      cursor:pointer;
+      min-height:42px;
+    }
+
+    .adminCard{
+      border:1px solid #ececec;
+      border-radius:14px;
+      padding:14px;
+      margin-top:14px;
+      background:#fff;
+    }
+
+    .routeRow{
+      display:grid;
+      grid-template-columns:1fr 1fr auto;
+      gap:8px;
+      align-items:end;
+      margin-top:10px;
+    }
+
+    .tag{
+      display:inline-block;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid #ddd;
+      background:#f5f5f5;
+      margin-left:6px;
+    }
+
+    @media (max-width:640px){
+      .wrap{
+        padding:14px;
+        padding-bottom:40px;
+      }
+
+      .card{
+        padding:16px;
+        border-radius:16px;
+      }
+
+      .routeRow{
+        grid-template-columns:1fr;
+      }
+
+      .secHead,
+      .reviewSectionHead{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .bottomInner{
+        gap:8px;
+      }
+
+      .bottomInner .btn{
+        font-size:16px;
+      }
+    }
+
+    @media (min-width:768px){
+      .wrap{padding:24px}
+      .card{padding:24px}
+      .title{font-size:26px}
+      label{font-size:17px}
+      input,select,textarea{font-size:18px;padding:16px 18px}
+      .itemsSearch{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="appbar">
+    <div class="appbarTitle">Ficha Mecânica</div>
+
+    <div class="appbarTools">
+      <button class="fontBtn" type="button" onclick="decreaseFontSize()" title="Diminuir fonte">A-</button>
+      <button class="fontBtn" type="button" onclick="increaseFontSize()" title="Aumentar fonte">A+</button>
+      <button class="gearBtn" type="button" onclick="openAdminPasswordModal()">⚙</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div id="screenBasic" class="card">
+      <div class="title">Dados básicos</div>
+
+      <label>Avaliador</label>
+      <select id="avaliador"></select>
+
+      <label>Analista</label>
+      <select id="analista"></select>
+
+      <label>Data e Hora</label>
+      <input id="dataHora" type="datetime-local"/>
+
+      <label>Cliente</label>
+      <input id="cliente"/>
+
+      <label>Celular</label>
+      <input id="celular" inputmode="numeric" maxlength="15" placeholder="(12) 98835-3200"/>
+
+      <label>Email</label>
+      <input id="email" inputmode="email"/>
+
+      <label>Placa (ABC1234 ou ABC1D23)</label>
+      <input id="placa" style="text-transform:uppercase" maxlength="7" />
+
+      <div id="plateWarnBox" class="warnBox hidden"></div>
+
+      <div id="vehiclePreviewCard" class="warnBox hidden" style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:900;margin-bottom:8px">Conferência do veículo</div>
+            <div id="vehiclePreviewText" class="small" style="color:#222"></div>
+          </div>
+
+          <button
+            id="btnEditVehicle"
+            type="button"
+            class="btn ghost"
+            onclick="toggleVehicleFieldsEditor_()"
+            style="width:auto;min-height:40px;padding:8px 12px;font-size:14px;border-radius:12px"
+            title="Editar manualmente"
+          >✏️</button>
+        </div>
+      </div>
+
+      <div id="vehicleFieldsWrap" class="hidden">
+        <label>Marca do Veículo</label>
+        <select id="marca"></select>
+
+        <label>Modelo e versão</label>
+        <select id="modelo" onchange="toggleOutroModelo()"></select>
+        <div id="modeloOutroWrap" class="hidden" style="margin-top:10px">
+          <label>Outro modelo/versão (descreva)</label>
+          <input id="modeloOutro"/>
+        </div>
+
+        <label>Versão</label>
+        <input id="versao" placeholder="Preenchido automaticamente quando a placa localizar"/>
+
+        <div class="row">
+          <div style="flex:1;min-width:140px">
+            <label>Ano fabricação</label>
+            <select id="anoFabricacao"></select>
+          </div>
+          <div style="flex:1;min-width:140px">
+            <label>Ano modelo</label>
+            <select id="anoModeloSelect"></select>
+          </div>
+        </div>
+      </div>
+
+      <label>Cor</label>
+      <select id="cor"></select>
+
+      <label>KM Atual (inteiro)</label>
+      <input id="km" inputmode="numeric" pattern="[0-9]*"/>
+
+      <div id="statusBasic" class="muted"></div>
+
+      <div class="row" style="margin-top:18px">
+        <button class="btn primary" type="button" onclick="goSections()">Continuar</button>
+      </div>
+    </div>
+
+    <div id="screenSections" class="hidden">
+      <div class="card">
+        <div class="title">Seções técnicas</div>
+        <div class="small">Toque em cada seção. Se não houver apontamento, marque “Não”.</div>
+
+        <div id="sectionsList"></div>
+
+        <div class="hr"></div>
+
+        <div class="title">Opcionais</div>
+        <div class="small">Toque para marcar ou desmarcar.</div>
+        <div id="opcionaisList" class="stackChoiceList"></div>
+
+        <div class="hr"></div>
+
+        <div class="title">Avaliações</div>
+        <div class="small">Toque para marcar ou desmarcar.</div>
+        <div id="avaliacoesList" class="stackChoiceList"></div>
+
+        <div class="hr"></div>
+
+        <div class="title">Fechamento</div>
+
+        <label>Valor Total da Ficha (inteiro)</label>
+        <input id="valorTotalFicha" inputmode="numeric" pattern="[0-9]*" readonly />
+        <div class="small" style="margin-top:8px">Total calculado automaticamente pela soma das seções com valor informado.</div>
+
+        <label>Valor do Precificador (inteiro)</label>
+        <input id="valorPrecificador" inputmode="numeric" pattern="[0-9]*"/>
+
+        <label>Valor da Fipe (inteiro)</label>
+        <input id="valorFipe" inputmode="numeric" pattern="[0-9]*"/>
+
+        <label>Débitos de multa (inteiro)</label>
+        <input id="debitosMulta" inputmode="numeric" pattern="[0-9]*"/>
+
+        <label>Possui quitação</label>
+        <select id="quitacao"></select>
+
+        <label>Quanto cliente quer? (inteiro)</label>
+        <input id="clienteQuer" inputmode="numeric" pattern="[0-9]*"/>
+
+        <label>Observações Relevantes</label>
+        <div id="autoObsBox" class="warnBox hidden" style="margin-bottom:10px;font-weight:800"></div>
+        <textarea id="observacoes" rows="4"></textarea>
+
+        <div id="statusSave" class="muted"></div>
+
+        <div class="row" style="margin-top:18px">
+          <button class="btn ghost" type="button" onclick="setScreen_('basic')">Voltar</button>
+          <button class="btn primary" type="button" onclick="goReview()">Salvar e enviar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screenReview" class="hidden">
+      <div class="card">
+        <div class="title">Sua ficha está quase pronta pra ser enviada</div>
+        <div class="small">Confira abaixo todos os dados antes do envio final.</div>
+        <div id="reviewContent"></div>
+        <div id="reviewStatus" class="muted"></div>
+      </div>
+    </div>
+
+    <div id="screenSuccess" class="hidden">
+      <div class="card">
+        <div class="successWrap">
+          <div class="successEmoji">✅</div>
+          <div class="successTitle">Ficha enviada com sucesso</div>
+          <div class="successText">
+            Sua ficha mecânica foi processada e enviada corretamente. Você já pode iniciar uma nova ficha.
+          </div>
+
+          <div class="quoteBox">
+            <div id="successQuote" class="quoteText"></div>
+          </div>
+
+          <div class="footerMini">
+            Desenvolvido e gerenciado por Cristiano Henrique da Silva, Todo os direitos reservados
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="bottomBar" class="bottomBar hidden">
+    <div class="bottomInner">
+      <button id="btnBack" class="btn ghost" type="button" onclick="onBackAction()">Voltar</button>
+      <button id="btnPrimary" class="btn primary" type="button" onclick="onPrimaryAction()">Continuar</button>
+    </div>
+  </div>
+
+  <div id="mercosulModalBack" class="modalBack" style="display:none">
+    <div class="modal" style="max-width:520px">
+      <div class="modalHead">
+        <b>Conferência de placa Mercosul</b>
+      </div>
+
+      <div class="small" style="margin-bottom:12px">Responda para gerar automaticamente a observação final, quando necessário.</div>
+
+      <label>1) A placa que está no carro é Mercosul?</label>
+      <div class="row" style="margin-top:10px">
+        <button id="btnPlacaCarroSim" class="btn ghost" type="button" onclick="setMercosulAnswer_('carro', true)">Sim</button>
+        <button id="btnPlacaCarroNao" class="btn ghost" type="button" onclick="setMercosulAnswer_('carro', false)">Não</button>
+      </div>
+
+      <label style="margin-top:16px">2) No documento do carro a placa é Mercosul?</label>
+      <div class="row" style="margin-top:10px">
+        <button id="btnDocSim" class="btn ghost" type="button" onclick="setMercosulAnswer_('documento', true)">Sim</button>
+        <button id="btnDocNao" class="btn ghost" type="button" onclick="setMercosulAnswer_('documento', false)">Não</button>
+      </div>
+
+      <div id="mercosulModalMsg" class="muted" style="margin-top:14px"></div>
+
+      <div class="row" style="margin-top:18px">
+        <button class="btn ghost" type="button" onclick="closeMercosulModal_()">Fechar</button>
+        <button class="btn primary" type="button" onclick="confirmMercosulModal_()">Confirmar respostas</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="adminPasswordBack" class="modalBack">
+    <div class="modal" style="max-width:480px">
+      <div class="modalHead">
+        <b>Acesso administrativo</b>
+        <button class="x" onclick="closeAdminPasswordModal()">X</button>
+      </div>
+
+      <label>Senha</label>
+      <input id="adminPasswordInput" type="password" />
+
+      <div class="row" style="margin-top:12px">
+        <button class="btn ghost" type="button" onclick="closeAdminPasswordModal()">Cancelar</button>
+        <button class="btn primary" type="button" onclick="unlockAdminPanel()">Entrar</button>
+      </div>
+
+      <div id="adminPasswordMsg" class="muted"></div>
+    </div>
+  </div>
+
+  <div id="adminConfigBack" class="modalBack">
+    <div class="modal">
+      <div class="modalHead">
+        <b>Configuração de e-mails</b>
+        <button class="x" onclick="closeAdminConfig()">X</button>
+      </div>
+
+      <div class="adminCard">
+        <div class="sectionTitle" style="margin-top:0">Modo de envio</div>
+        <label style="margin-top:8px">
+          <input id="cfgTestMode" type="checkbox" style="width:auto;min-height:auto;transform:scale(1.2);margin-right:8px" />
+          Modo teste (envia somente para o administrador)
+        </label>
+        <div class="small">Enquanto este modo estiver ativo, nenhuma ficha será enviada para analista, avaliador ou líder.</div>
+      </div>
+
+      <div class="adminCard">
+        <div class="sectionTitle" style="margin-top:0">Fixos</div>
+
+        <label>E-mail do administrador</label>
+        <input id="cfgAdminEmail" inputmode="email" placeholder="ex: cristianotonyveiculos@gmail.com" />
+
+        <label>E-mail da líder</label>
+        <input id="cfgLeaderEmail" inputmode="email" placeholder="ex: luanda@empresa.com" />
+      </div>
+
+      <div class="adminCard">
+        <div class="sectionTitle" style="margin-top:0">Analistas</div>
+        <div id="analistasRoutes"></div>
+        <div class="row" style="margin-top:12px">
+          <button class="btn ghost" type="button" onclick="addRouteRow('analista')">+ Adicionar analista</button>
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div class="sectionTitle" style="margin-top:0">Avaliadores</div>
+        <div id="avaliadoresRoutes"></div>
+        <div class="row" style="margin-top:12px">
+          <button class="btn ghost" type="button" onclick="addRouteRow('avaliador')">+ Adicionar avaliador</button>
+        </div>
+      </div>
+
+      <div class="adminCard">
+        <div class="sectionTitle" style="margin-top:0">Alterar senha</div>
+
+        <label>Senha atual</label>
+        <input id="cfgCurrentPassword" type="password" />
+
+        <label>Nova senha</label>
+        <input id="cfgNewPassword" type="password" />
+
+        <div class="row" style="margin-top:12px">
+          <button class="btn ghost" type="button" onclick="changeAdminPassword()">Alterar senha</button>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:16px">
+        <button class="btn ghost" type="button" onclick="closeAdminConfig()">Fechar</button>
+        <button class="btn primary" type="button" onclick="saveAdminConfig()">Salvar configurações</button>
+      </div>
+
+      <div id="adminConfigMsg" class="muted"></div>
+    </div>
+  </div>
+
+<script>
+  let catalogs = {};
+  let appVersion = 'v1';
+  let sending = false;
+  let adminSessionPassword = '';
+  let adminSettings = null;
+  let expandedSectionKey = '';
+
+  const FONT_STORAGE_KEY = 'ficha_mecanica_font_scale';
+  const DRAFT_STORAGE_KEY = 'ficha_mecanica_draft_v2';
+  const DRAFT_MAX_AGE_HOURS = 24;
+  let autoDraftAttached = false;
+
+  const motivationalQuotes = [
+    '“Tudo quanto te vier à mão para fazer, faze-o conforme as tuas forças.” — Eclesiastes 9:10',
+    '“O sucesso nasce do trabalho bem feito, da constância e da coragem de continuar.”',
+    '“Grandes resultados começam com pequenas tarefas feitas com excelência.”',
+    '“Quem planta dedicação colhe confiança.”',
+    '“O esforço de hoje constrói a conquista de amanhã.”',
+    '“Disciplina no trabalho transforma rotina em resultado.”'
+  ];
+
+  const state = createEmptyState_();
+
+  const PLACA_RE = /^[A-Z]{3}\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/;
+  const CELULAR_DIGITS_RE = /^[1-9]{2}9\d{8}$/;
+
+  const SECTIONS = [
+    { key:'funilaria', label:'Funilaria', cat:'funilaria_itens', max:20000 },
+    { key:'tapecaria', label:'Tapeçaria', cat:'tapecaria_itens', max:12000 },
+    { key:'eletrica', label:'Elétrica', cat:'eletrica_itens', max:12000 },
+    { key:'mecanica', label:'Mecânica', cat:'mecanica_criterios', max:25000 },
+    { key:'suspensao', label:'Suspensão', cat:'suspensao_itens', max:15000 },
+    { key:'pneusDianteiros', label:'Pneus Dianteiros (par)', cat:'pneus_itens', max:8000 },
+    { key:'pneusTraseiros', label:'Pneus Traseiros (par)', cat:'pneus_itens', max:8000 },
+    { key:'vidros', label:'Vidros', cat:'vidros_itens', max:15000 },
+    { key:'ferramentas', label:'Ferramentas', cat:'ferramentas_itens', max:8000 },
+    { key:'estepe', label:'Estepe', cat:'Estepe_itens', max:8000 },
+    { key:'arCondicionado', label:'Ar condicionado', cat:'arcondicionado_itens', max:15000 },
+    { key:'lavagem', label:'Lavagem', cat:'lavagem_itens', max:3000 }
+  ];
+
+  function $(id){ return document.getElementById(id); }
+
+  function getCatalogList_(key){
+    return catalogs[key] || catalogs[String(key || '').toLowerCase()] || catalogs[String(key || '').toUpperCase()] || [];
+  }
+
+  function applyFontScale(scale){
+    const safe = Math.max(0.9, Math.min(1.4, Number(scale || 1)));
+    document.documentElement.style.setProperty('--fontScale', String(safe));
+    try {
+      localStorage.setItem(FONT_STORAGE_KEY, String(safe));
+    } catch(e) {}
+  }
+
+  function loadFontScale(){
+    let saved = 1;
+    try {
+      saved = localStorage.getItem(FONT_STORAGE_KEY) || 1;
+    } catch(e) {}
+    applyFontScale(saved);
+  }
+
+  function increaseFontSize(){
+    let saved = 1;
+    try {
+      saved = Number(localStorage.getItem(FONT_STORAGE_KEY) || 1);
+    } catch(e) {}
+    applyFontScale((saved + 0.1).toFixed(2));
+  }
+
+  function decreaseFontSize(){
+    let saved = 1;
+    try {
+      saved = Number(localStorage.getItem(FONT_STORAGE_KEY) || 1);
+    } catch(e) {}
+    applyFontScale((saved - 0.1).toFixed(2));
+  }
+
+  function setupMobileInputHints_(){
+    const hints = [
+      ['cliente', { autocapitalize:'words', autocomplete:'name', enterkeyhint:'next' }],
+      ['celular', { autocomplete:'tel', enterkeyhint:'next' }],
+      ['email', { autocomplete:'email', enterkeyhint:'next', autocapitalize:'off', autocorrect:'off', spellcheck:'false' }],
+      ['placa', { autocapitalize:'characters', autocorrect:'off', spellcheck:'false', enterkeyhint:'next' }],
+      ['modeloOutro', { autocapitalize:'words', enterkeyhint:'next' }],
+      ['versao', { autocapitalize:'words', enterkeyhint:'next' }],
+      ['km', { enterkeyhint:'done' }],
+      ['valorTotalFicha', { enterkeyhint:'next' }],
+      ['valorPrecificador', { enterkeyhint:'next' }],
+      ['valorFipe', { enterkeyhint:'next' }],
+      ['debitosMulta', { enterkeyhint:'next' }],
+      ['clienteQuer', { enterkeyhint:'next' }],
+      ['observacoes', { enterkeyhint:'done' }]
+    ];
+
+    hints.forEach(([id, attrs])=>{
+      const el = $(id);
+      if (!el) return;
+      Object.keys(attrs).forEach(key => el.setAttribute(key, attrs[key]));
+    });
+  }
+
+  function preventDoubleTapZoomButtons_(){
+    document.addEventListener('touchend', function(e){
+      const target = e.target.closest('button');
+      if (!target) return;
+      const now = Date.now();
+      const last = Number(target.getAttribute('data-last-touch') || 0);
+      if (now - last < 300) e.preventDefault();
+      target.setAttribute('data-last-touch', String(now));
+    }, { passive:false });
+  }
+
+  function createEmptyState_(){
+    return {
+      meta: { submitKey: '' },
+      basico: {},
+      secoes: {},
+      checklists: { opcionais: [], avaliacoes: [] },
+      fechamento: {},
+      plateLookup: {
+        loading: false,
+        found: false,
+        data: null,
+        sugestao: null,
+        lastQueriedPlaca: '',
+        manualOverride: false
+      },
+      mercosulCheck: {
+        askedPlaca: '',
+        placaCarroMercosul: null,
+        documentoMercosul: null,
+        autoNotice: '',
+        pendingPlaca: ''
+      }
+    };
+  }
+
+  function defaultSectionState_(){
+    return {
+      tem:false,
+      itens:[],
+      outro:'',
+      valor:'',
+      uiStep:'choice'
+    };
+  }
+
+  function ensureSectionState_(key){
+    if (!state.secoes[key]) state.secoes[key] = defaultSectionState_();
+    return state.secoes[key];
+  }
+
+  function resetStateData_(){
+    state.meta = { submitKey: '' };
+    state.basico = {};
+    state.secoes = {};
+    state.checklists = { opcionais: [], avaliacoes: [] };
+    state.fechamento = {};
+    state.plateLookup = {
+      loading: false,
+      found: false,
+      data: null,
+      sugestao: null,
+      lastQueriedPlaca: '',
+      manualOverride: false
+    };
+    state.mercosulCheck = {
+      askedPlaca: '',
+      placaCarroMercosul: null,
+      documentoMercosul: null,
+      autoNotice: '',
+      pendingPlaca: ''
+    };
+    expandedSectionKey = '';
+  }
+
+  function isOutroText(t){
+    return String(t || '').toLowerCase().startsWith('outro');
+  }
+
+  function normalizePlaca(v){
+    return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  }
+
+  function validatePlaca(v){
+    return PLACA_RE.test(normalizePlaca(v));
+  }
+
+  function sanitizePhoneDigits(v){
+    return String(v || '').replace(/\D+/g, '').slice(0, 11);
+  }
+
+  function formatPhoneMask(v){
+    const d = sanitizePhoneDigits(v);
+    if (!d) return '';
+    if (d.length <= 2) return `(${d}`;
+    if (d.length <= 7) return `(${d.slice(0,2)}) ${d.slice(2)}`;
+    return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7,11)}`;
+  }
+
+  function validateCelular(v){
+    return CELULAR_DIGITS_RE.test(sanitizePhoneDigits(v));
+  }
+
+  function setupPhoneMask(){
+    const el = $('celular');
+
+    el.addEventListener('input', ()=>{
+      el.value = formatPhoneMask(el.value);
+    });
+
+    el.addEventListener('blur', ()=>{
+      el.value = formatPhoneMask(el.value);
+    });
+  }
+
+  function fillSelect(id, list, placeholder='Selecione...'){
+    const el = $(id);
+    el.innerHTML = '';
+    const o0 = document.createElement('option');
+    o0.value = '';
+    o0.textContent = placeholder;
+    el.appendChild(o0);
+    (list||[]).forEach(v=>{
+      const o = document.createElement('option');
+      o.value = v;
+      o.textContent = v;
+      el.appendChild(o);
+    });
+  }
+
+  function fillYearSelects(){
+    const currentYear = new Date().getFullYear() + 1;
+    const startYear = 1980;
+    const years = [];
+    for (let y = currentYear; y >= startYear; y--) years.push(String(y));
+
+    fillSelect('anoFabricacao', years, 'Selecione o ano...');
+    fillSelect('anoModeloSelect', years, 'Selecione o ano modelo...');
+  }
+
+  function onlyDigits(el){
+    el.addEventListener('input', ()=>{
+      el.value = (el.value || '').replace(/\D+/g,'');
+    });
+  }
+
+  function sanitizeInt(v){
+    const s = String(v||'').replace(/\D+/g,'');
+    return s ? parseInt(s,10) : 0;
+  }
+
+  function moneyBr(v){
+    const n = Number(v || 0);
+    return 'R$ ' + n.toLocaleString('pt-BR');
+  }
+
+  function textOrDash(v){
+    const s = String(v ?? '').trim();
+    return s || '—';
+  }
+
+  function escapeHtml(str){
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function normalizeCompareText_(txt){
+    return String(txt || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .toLowerCase()
+      .trim();
+  }
+
+  function buildModeloVersaoDisplay_(modelo, versao){
+    const m = String(modelo || '').trim();
+    const v = String(versao || '').trim();
+    const mNorm = normalizeCompareText_(m);
+    const vNorm = normalizeCompareText_(v);
+
+    if (m && v) {
+      if (vNorm && mNorm && vNorm.indexOf(mNorm) === 0) return v;
+      if (vNorm && mNorm && vNorm.includes(mNorm)) return v;
+      if (mNorm && vNorm && mNorm.includes(vNorm)) return m;
+      return (m + ' ' + v).trim();
+    }
+
+    return m || v || '';
+  }
+
+  function ensureSelectOption_(selectId, value, label){
+    const el = $(selectId);
+    if (!el) return '';
+
+    const cleanValue = String(value || '').trim();
+    if (!cleanValue) return '';
+
+    const exists = Array.from(el.options).some(o => String(o.value || '') === cleanValue);
+    if (!exists) {
+      const opt = document.createElement('option');
+      opt.value = cleanValue;
+      opt.textContent = label || cleanValue;
+      opt.setAttribute('data-api-fallback', '1');
+      el.appendChild(opt);
+    }
+
+    el.value = cleanValue;
+    return cleanValue;
+  }
+
+  function getMarcaOperacional_(){
+    const selected = String($('marca').value || '').trim();
+    if (selected) return selected;
+
+    const s = state?.plateLookup?.sugestao || {};
+    return String(s.marcaSelecionadaCadastro || s.marcaFallbackApi || s.marcaSugerida || '').trim();
+  }
+
+  function buildVehiclePreviewHtml_(){
+    const marca = getMarcaOperacional_();
+    const modelo = String($('modelo').value || '').trim();
+    const modeloOutro = String($('modeloOutro').value || '').trim();
+    const versao = String($('versao').value || '').trim();
+    const anoFab = String($('anoFabricacao').value || '').trim();
+    const anoMod = String($('anoModeloSelect').value || '').trim();
+
+    let modeloFinal = modelo;
+    if (isOutroText(modelo)) {
+      modeloFinal = modeloOutro || modelo;
+    }
+
+    modeloFinal = buildModeloVersaoDisplay_(modeloFinal, versao);
+
+    const linhas = [];
+    if (marca) linhas.push('<b>Marca:</b> ' + escapeHtml(marca));
+    if (modeloFinal) linhas.push('<b>Modelo e versão:</b> ' + escapeHtml(modeloFinal));
+    if (anoFab) linhas.push('<b>Ano fabricação:</b> ' + escapeHtml(anoFab));
+    if (anoMod) linhas.push('<b>Ano modelo:</b> ' + escapeHtml(anoMod));
+
+    return linhas.join('<br>');
+  }
+
+  function refreshVehiclePreview_(){
+    const html = buildVehiclePreviewHtml_();
+    const hasContent = !!html || !!String($('placa').value || '').trim();
+
+    $('vehiclePreviewText').innerHTML = html || 'Nenhum dado automático localizado ainda.';
+    $('vehiclePreviewCard').classList.toggle('hidden', !hasContent);
+  }
+
+  function toggleVehicleFieldsEditor_(){
+    $('vehicleFieldsWrap').classList.toggle('hidden');
+    state.plateLookup.manualOverride = !$('vehicleFieldsWrap').classList.contains('hidden');
+    if (state.plateLookup.manualOverride) {
+      unlockVehicleFields_();
+    } else if (state.plateLookup.found) {
+      lockVehicleFields_();
+    }
+    refreshVehiclePreview_();
+  }
+
+  function attachVehiclePreviewListeners_(){
+    ['marca','modelo','modeloOutro','versao','anoFabricacao','anoModeloSelect'].forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener('change', refreshVehiclePreview_);
+      el.addEventListener('input', refreshVehiclePreview_);
+    });
+  }
+
+
+  function getDraftFieldIds_(){
+    return [
+      'avaliador','analista','dataHora','cliente','celular','email','placa',
+      'marca','modelo','modeloOutro','versao','anoFabricacao','anoModeloSelect',
+      'cor','km','valorTotalFicha','valorPrecificador','valorFipe','debitosMulta',
+      'quitacao','clienteQuer','observacoes'
+    ];
+  }
+
+  function captureDraftFields_(){
+    const fields = {};
+    getDraftFieldIds_().forEach(id=>{
+      const el = $(id);
+      if (!el) return;
+      fields[id] = el.value || '';
+    });
+    return fields;
+  }
+
+  function restoreDraftFields_(fields){
+    if (!fields) return;
+    getDraftFieldIds_().forEach(id=>{
+      const el = $(id);
+      if (!el) return;
+      if (Object.prototype.hasOwnProperty.call(fields, id)) {
+        el.value = fields[id] || '';
+      }
+    });
+
+    toggleOutroModelo();
+    refreshVehiclePreview_();
+    updateAutoObsBox_();
+  }
+
+  function hasAnyDraftContent_(draft){
+    const fields = draft?.fields || {};
+    const important = ['avaliador','analista','cliente','celular','email','placa','marca','modelo','km','observacoes'];
+
+    if (important.some(id => String(fields[id] || '').trim())) return true;
+
+    const secoes = draft?.state?.secoes || {};
+    if (Object.values(secoes).some(s => s && (s.tem || (s.itens || []).length || String(s.outro || '').trim() || String(s.valor || '').trim()))) {
+      return true;
+    }
+
+    const checklists = draft?.state?.checklists || {};
+    if ((checklists.opcionais || []).length || (checklists.avaliacoes || []).length) return true;
+
+    return false;
+  }
+
+  function saveDraft_(){
+    if (sending) return;
+
+    try {
+      const draft = {
+        savedAt: new Date().toISOString(),
+        appVersion: appVersion,
+        fields: captureDraftFields_(),
+        state: JSON.parse(JSON.stringify(state))
+      };
+
+      if (!hasAnyDraftContent_(draft)) return;
+
+      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
+    } catch(e) {
+      console.warn('Falha ao salvar rascunho:', e);
+    }
+  }
+
+  function loadDraft_(){
+    try {
+      const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+      if (!raw) return null;
+
+      const draft = JSON.parse(raw);
+      const savedAtMs = new Date(draft.savedAt || 0).getTime();
+      const ageHours = (Date.now() - savedAtMs) / 1000 / 60 / 60;
+
+      if (!savedAtMs || ageHours > DRAFT_MAX_AGE_HOURS) {
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+        return null;
+      }
+
+      if (!hasAnyDraftContent_(draft)) return null;
+
+      return draft;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function clearDraft_(){
+    try {
+      localStorage.removeItem(DRAFT_STORAGE_KEY);
+    } catch(e) {}
+  }
+
+  function restoreDraft_(draft){
+    if (!draft) return;
+
+    const savedState = draft.state || {};
+
+    state.meta = savedState.meta || { submitKey: '' };
+    state.basico = savedState.basico || {};
+    state.secoes = savedState.secoes || {};
+    state.checklists = savedState.checklists || { opcionais: [], avaliacoes: [] };
+    state.fechamento = savedState.fechamento || {};
+    state.plateLookup = savedState.plateLookup || state.plateLookup;
+    state.mercosulCheck = savedState.mercosulCheck || state.mercosulCheck;
+
+    restoreDraftFields_(draft.fields || {});
+
+    renderSectionsList();
+    renderChecklist('opcionaisList', getCatalogList_('opcionais'), state.checklists.opcionais || []);
+    renderChecklist('avaliacoesList', getCatalogList_('avaliacao'), state.checklists.avaliacoes || []);
+    recalcTotal();
+
+    const savedDate = draft.savedAt ? new Date(draft.savedAt) : null;
+    const savedLabel = savedDate && !isNaN(savedDate.getTime())
+      ? savedDate.toLocaleString('pt-BR')
+      : 'recentemente';
+
+    $('statusBasic').textContent = 'Rascunho recuperado automaticamente de ' + savedLabel + '.';
+  }
+
+  function tryRestoreDraft_(){
+    const draft = loadDraft_();
+    if (!draft) return;
+
+    const shouldRestore = confirm('Existe uma ficha não finalizada neste aparelho. Deseja recuperar os dados?');
+
+    if (!shouldRestore) {
+      clearDraft_();
+      return;
+    }
+
+    restoreDraft_(draft);
+  }
+
+  function debounce_(fn, wait){
+    let t = null;
+    return function(){
+      clearTimeout(t);
+      t = setTimeout(fn, wait);
+    };
+  }
+
+  function attachAutoDraft_(){
+    if (autoDraftAttached) return;
+    autoDraftAttached = true;
+
+    const debouncedSave = debounce_(saveDraft_, 600);
+
+    document.addEventListener('input', debouncedSave);
+    document.addEventListener('change', debouncedSave);
+
+    document.addEventListener('visibilitychange', function(){
+      if (document.visibilityState === 'hidden') {
+        saveDraft_();
+      }
+    });
+
+    window.addEventListener('pagehide', saveDraft_);
+    window.addEventListener('beforeunload', saveDraft_);
+  }
+
+  function createSubmitKey_(){
+    return [
+      'SUBMIT',
+      Date.now(),
+      Math.random().toString(36).slice(2),
+      normalizePlaca($('placa').value || ''),
+      String($('avaliador').value || '').replace(/\s+/g, '_')
+    ].join('_');
+  }
+
+  function bootstrap(){
+    google.script.run.withSuccessHandler(data=>{
+      catalogs = data.catalogs || {};
+      appVersion = data.appVersion || 'v1';
+
+      fillSelect('avaliador', getCatalogList_('Avaliador').length ? getCatalogList_('Avaliador') : getCatalogList_('avaliador'));
+      fillSelect('analista', getCatalogList_('analistas').length ? getCatalogList_('analistas') : (getCatalogList_('Analista').length ? getCatalogList_('Analista') : getCatalogList_('analista')));
+      fillSelect('marca', getCatalogList_('marcas'));
+      fillSelect('modelo', getCatalogList_('modelos_versao'));
+      fillSelect('cor', getCatalogList_('cores'));
+      fillSelect('quitacao', getCatalogList_('quitacao'));
+      fillYearSelects();
+
+      $('vehicleFieldsWrap').classList.add('hidden');
+      refreshVehiclePreview_();
+
+      setNowDatetime_();
+      loadFontScale();
+      setupPhoneMask();
+      setupMobileInputHints_();
+      preventDoubleTapZoomButtons_();
+      attachPlateLookupTriggers_();
+      attachVehiclePreviewListeners_();
+
+      ['km','valorTotalFicha','valorPrecificador','valorFipe','debitosMulta','clienteQuer']
+        .forEach(id => onlyDigits($(id)));
+
+      renderSectionsList();
+      renderChecklist('opcionaisList', getCatalogList_('opcionais'), state.checklists.opcionais);
+      renderChecklist('avaliacoesList', getCatalogList_('avaliacao'), state.checklists.avaliacoes);
+
+      attachAutoDraft_();
+      tryRestoreDraft_();
+
+      const avaliadoresCount = (getCatalogList_('Avaliador').length || getCatalogList_('avaliador').length);
+      const analistasCount = (getCatalogList_('analistas').length || getCatalogList_('Analista').length || getCatalogList_('analista').length);
+
+      if (!avaliadoresCount && !analistasCount) {
+        $('statusBasic').textContent = 'Não foi possível carregar avaliadores e analistas da aba CADASTROS.';
+      } else if (!avaliadoresCount) {
+        $('statusBasic').textContent = 'Não foi possível carregar avaliadores da aba CADASTROS.';
+      } else if (!analistasCount) {
+        $('statusBasic').textContent = 'Não foi possível carregar analistas da aba CADASTROS.';
+      } else {
+        $('statusBasic').textContent = `App ${appVersion} | Catálogos: ${Object.keys(catalogs).length}`;
+      }
+
+      setScreen_('basic');
+    }).withFailureHandler(err=>{
+      $('statusBasic').textContent = 'Erro ao carregar catálogos: ' + (err?.message || err);
+    }).getBootstrapData();
+  }
+
+  function setNowDatetime_(){
+    const dt = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    $('dataHora').value = `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+  }
+
+  function toggleOutroModelo(){
+    $('modeloOutroWrap').classList.toggle('hidden', !isOutroText($('modelo').value));
+    $('modeloOutro').disabled = !isOutroText($('modelo').value);
+    refreshVehiclePreview_();
+  }
+
+  function resetMercosulCheck_(clearAskedPlaca){
+    state.mercosulCheck = {
+      askedPlaca: clearAskedPlaca ? '' : String(state.mercosulCheck?.askedPlaca || ''),
+      placaCarroMercosul: null,
+      documentoMercosul: null,
+      autoNotice: '',
+      pendingPlaca: ''
+    };
+    updateAutoObsBox_();
+    updateMercosulButtons_();
+    const msg = $('mercosulModalMsg');
+    if (msg) msg.textContent = '';
+  }
+
+  function buildMercosulNotice_(){
+    const info = state.mercosulCheck || {};
+    const carroMercosul = info.placaCarroMercosul === true;
+    const docMercosul = info.documentoMercosul === true;
+
+    if (!carroMercosul && docMercosul) {
+      return '⚠️ AVISO AUTOMÁTICO: Precisa cobrar a emissão da placa Mercosul - R$ 140,00.';
+    }
+
+    return '';
+  }
+
+  function updateAutoObsBox_(){
+    const box = $('autoObsBox');
+    if (!box) return;
+
+    const txt = buildMercosulNotice_();
+    state.mercosulCheck.autoNotice = txt;
+
+    if (!txt) {
+      box.classList.add('hidden');
+      box.textContent = '';
+      return;
+    }
+
+    box.classList.remove('hidden');
+    box.textContent = txt;
+  }
+
+  function buildFinalObservacoes_(){
+    const aviso = String(state?.mercosulCheck?.autoNotice || '').trim();
+    const manual = String($('observacoes').value || '').trim();
+
+    if (aviso && manual) return aviso + "\n\n" + manual;
+    if (aviso) return aviso;
+    return manual;
+  }
+
+  function updateMercosulButtons_(){
+    const map = [
+      ['btnPlacaCarroSim', state.mercosulCheck?.placaCarroMercosul === true],
+      ['btnPlacaCarroNao', state.mercosulCheck?.placaCarroMercosul === false],
+      ['btnDocSim', state.mercosulCheck?.documentoMercosul === true],
+      ['btnDocNao', state.mercosulCheck?.documentoMercosul === false]
+    ];
+
+    map.forEach(([id, active]) => {
+      const el = $(id);
+      if (!el) return;
+      el.classList.toggle('primary', !!active);
+      el.classList.toggle('ghost', !active);
+    });
+  }
+
+  function openMercosulModal_(placa){
+    const placaNorm = normalizePlaca(placa || $('placa').value);
+    if (!validatePlaca(placaNorm)) return;
+
+    state.mercosulCheck.pendingPlaca = placaNorm;
+    const asked = String(state.mercosulCheck.askedPlaca || '');
+    if (asked !== placaNorm) {
+      resetMercosulCheck_(true);
+      state.mercosulCheck.pendingPlaca = placaNorm;
+    }
+
+    updateMercosulButtons_();
+    const msg = $('mercosulModalMsg');
+    if (msg) msg.textContent = 'Selecione Sim ou Não nas duas perguntas.';
+    $('mercosulModalBack').style.display = 'flex';
+  }
+
+  function closeMercosulModal_(){
+    $('mercosulModalBack').style.display = 'none';
+  }
+
+  function setMercosulAnswer_(field, value){
+    if (field === 'carro') state.mercosulCheck.placaCarroMercosul = value;
+    if (field === 'documento') state.mercosulCheck.documentoMercosul = value;
+    updateMercosulButtons_();
+
+    const msg = $('mercosulModalMsg');
+    if (msg) {
+      if (state.mercosulCheck.placaCarroMercosul === null || state.mercosulCheck.documentoMercosul === null) {
+        msg.textContent = 'Selecione Sim ou Não nas duas perguntas.';
+      } else {
+        msg.textContent = 'Respostas prontas. Toque em "Confirmar respostas".';
+      }
+    }
+  }
+
+  function confirmMercosulModal_(){
+    if (state.mercosulCheck.placaCarroMercosul === null || state.mercosulCheck.documentoMercosul === null) {
+      $('mercosulModalMsg').textContent = 'Responda as duas perguntas antes de confirmar.';
+      return false;
+    }
+
+    state.mercosulCheck.askedPlaca = String(state.mercosulCheck.pendingPlaca || normalizePlaca($('placa').value));
+    state.mercosulCheck.pendingPlaca = '';
+    updateAutoObsBox_();
+    closeMercosulModal_();
+    return true;
+  }
+
+  function maybeAskMercosulQuestions_(placa){
+    const placaNorm = normalizePlaca(placa);
+    if (!validatePlaca(placaNorm)) return;
+    if (String(state.mercosulCheck.askedPlaca || '') === placaNorm) return;
+    openMercosulModal_(placaNorm);
+  }
+
+  function attachPlateLookupTriggers_(){
+    const placaEl = $('placa');
+
+    placaEl.addEventListener('input', ()=>{
+      const before = placaEl.value;
+      const normalized = normalizePlaca(before);
+      if (before !== normalized) placaEl.value = normalized;
+
+      state.plateLookup.manualOverride = false;
+
+      if (normalizePlaca(state.mercosulCheck?.askedPlaca || '') !== normalized) {
+        resetMercosulCheck_(true);
+      }
+
+      if (normalized.length < 7) {
+        state.plateLookup.lastQueriedPlaca = '';
+        resetPlateSuggestionUI_();
+        unlockVehicleFields_();
+        refreshVehiclePreview_();
+        $('statusBasic').textContent = `App ${appVersion} | Catálogos: ${Object.keys(catalogs).length}`;
+        return;
+      }
+
+      maybeLookupPlate_();
+    });
+
+    placaEl.addEventListener('blur', ()=>{
+      placaEl.value = normalizePlaca(placaEl.value);
+      refreshVehiclePreview_();
+    });
+  }
+
+  function getVehicleFieldIds_(){
+    return ['marca','modelo','modeloOutro','versao','anoFabricacao','anoModeloSelect'];
+  }
+
+  function clearAutoClasses_(){
+    getVehicleFieldIds_().forEach(id => $(id).classList.remove('auto'));
+  }
+
+  function lockVehicleFields_(){
+    $('marca').disabled = true;
+    $('modelo').disabled = true;
+    $('modeloOutro').disabled = true;
+    $('versao').disabled = true;
+    $('anoFabricacao').disabled = true;
+    $('anoModeloSelect').disabled = true;
+  }
+
+  function unlockVehicleFields_(){
+    $('marca').disabled = false;
+    $('modelo').disabled = false;
+    $('versao').disabled = false;
+    $('anoFabricacao').disabled = false;
+    $('anoModeloSelect').disabled = false;
+
+    const modeloSel = $('modelo').value;
+    const outroAtivo = isOutroText(modeloSel);
+    $('modeloOutro').disabled = !outroAtivo;
+  }
+
+  function resetPlateSuggestionUI_(){
+    clearAutoClasses_();
+    $('plateWarnBox').classList.add('hidden');
+    $('plateWarnBox').textContent = '';
+  }
+
+  function clearSuggestedVehicleFields_(){
+    $('marca').value = '';
+    $('modelo').value = '';
+    $('modeloOutro').value = '';
+    $('versao').value = '';
+    $('anoFabricacao').value = '';
+    $('anoModeloSelect').value = '';
+    $('modeloOutroWrap').classList.add('hidden');
+    refreshVehiclePreview_();
+  }
+
+  function maybeLookupPlate_(){
+    const placa = normalizePlaca($('placa').value);
+    $('placa').value = placa;
+
+    if (!validatePlaca(placa)) return;
+    if (state.plateLookup.loading) return;
+    if (state.plateLookup.lastQueriedPlaca === placa && state.plateLookup.found) return;
+    if (state.plateLookup.lastQueriedPlaca === placa && !state.plateLookup.found) return;
+
+    state.plateLookup.loading = true;
+    state.plateLookup.lastQueriedPlaca = placa;
+
+    resetPlateSuggestionUI_();
+    $('statusBasic').textContent = 'Consultando veículo pela placa...';
+
+    google.script.run
+      .withSuccessHandler(res => {
+        state.plateLookup.loading = false;
+
+        if (!res || !res.ok) {
+          state.plateLookup.found = false;
+          state.plateLookup.data = null;
+          state.plateLookup.sugestao = null;
+          unlockVehicleFields_();
+          refreshVehiclePreview_();
+          $('statusBasic').textContent = 'Falha ao consultar a placa. O preenchimento segue manualmente.';
+          return;
+        }
+
+        state.plateLookup.found = !!res.found;
+        state.plateLookup.data = res.normalized || null;
+        state.plateLookup.sugestao = res.sugestao || null;
+
+        if (res.found) {
+          applyPlateSuggestionToForm_(res);
+          if (!state.plateLookup.manualOverride) {
+            lockVehicleFields_();
+          }
+          $('plateWarnBox').textContent = res.avisoConferencia || '';
+          $('plateWarnBox').classList.remove('hidden');
+          $('statusBasic').textContent = 'Veículo localizado pela placa.';
+          maybeAskMercosulQuestions_(placa);
+          return;
+        }
+
+        clearSuggestedVehicleFields_();
+        unlockVehicleFields_();
+        refreshVehiclePreview_();
+        $('plateWarnBox').textContent = res.avisoConferencia || 'Placa não localizada. O preenchimento deve seguir manualmente.';
+        $('plateWarnBox').classList.remove('hidden');
+        $('statusBasic').textContent = 'Placa não localizada. O preenchimento segue manualmente.';
+        maybeAskMercosulQuestions_(placa);
+      })
+      .withFailureHandler(err => {
+        state.plateLookup.loading = false;
+        state.plateLookup.found = false;
+        state.plateLookup.data = null;
+        state.plateLookup.sugestao = null;
+        unlockVehicleFields_();
+        refreshVehiclePreview_();
+        $('statusBasic').textContent = 'Falha ao consultar a placa: ' + (err?.message || err);
+      })
+      .suggestVehicleFieldsFromPlate({ placa });
+  }
+
+  function applyPlateSuggestionToForm_(res){
+    const s = res?.sugestao || {};
+    clearAutoClasses_();
+
+    if (!res.found) return;
+
+    if (s.marcaSelecionadaCadastro) {
+      $('marca').value = s.marcaSelecionadaCadastro;
+      $('marca').classList.add('auto');
+    } else if (s.marcaFallbackApi || s.marcaSugerida) {
+      // Fallback operacional: se a marca da API não existir no cadastro,
+      // cria uma opção temporária no select para não travar a ficha.
+      ensureSelectOption_('marca', s.marcaFallbackApi || s.marcaSugerida, (s.marcaSugerida || s.marcaFallbackApi) + ' (API)');
+      $('marca').classList.add('auto');
+    }
+
+    if (s.selectedModeloCadastro) {
+      const modeloExiste = Array.from($('modelo').options).some(o => o.value === s.selectedModeloCadastro);
+
+      if (modeloExiste) {
+        $('modelo').value = s.selectedModeloCadastro;
+      } else {
+        $('modelo').selectedIndex = 0;
+      }
+
+      $('modelo').classList.add('auto');
+      $('modeloOutro').value = '';
+      $('modeloOutroWrap').classList.add('hidden');
+      $('modeloOutro').disabled = true;
+    } else if (s.usarModeloOutro) {
+      const outroOpt = Array.from($('modelo').options).find(o => String(o.value || '').toLowerCase().startsWith('outro'));
+      if (outroOpt) $('modelo').value = outroOpt.value;
+      $('modelo').classList.add('auto');
+      $('modeloOutroWrap').classList.remove('hidden');
+      $('modeloOutro').value = s.modeloOutroSugerido || '';
+      $('modeloOutro').classList.add('auto');
+      $('modeloOutro').disabled = false;
+    }
+
+    if (s.versaoSugerida) {
+      $('versao').value = s.versaoSugerida;
+      $('versao').classList.add('auto');
+    }
+
+    if (s.anoFabricacaoSugerido) {
+      $('anoFabricacao').value = String(s.anoFabricacaoSugerido);
+      $('anoFabricacao').classList.add('auto');
+    }
+
+    if (s.anoModeloSugerido) {
+      $('anoModeloSelect').value = String(s.anoModeloSugerido);
+      $('anoModeloSelect').classList.add('auto');
+    }
+
+    toggleOutroModelo();
+    refreshVehiclePreview_();
+  }
+
+  function setScreen_(name){
+    $('screenBasic').classList.add('hidden');
+    $('screenSections').classList.add('hidden');
+    $('screenReview').classList.add('hidden');
+    $('screenSuccess').classList.add('hidden');
+    $('bottomBar').classList.add('hidden');
+
+    if (name === 'basic') $('screenBasic').classList.remove('hidden');
+    if (name === 'sections') $('screenSections').classList.remove('hidden');
+
+    if (name === 'review') {
+      $('screenReview').classList.remove('hidden');
+      $('bottomBar').classList.remove('hidden');
+      $('btnBack').textContent = 'Corrigir';
+      $('btnPrimary').textContent = 'Tudo certo, quero enviar';
+      $('btnBack').disabled = false;
+      $('btnPrimary').disabled = false;
+    }
+
+    if (name === 'success') {
+      $('screenSuccess').classList.remove('hidden');
+      $('bottomBar').classList.remove('hidden');
+      $('btnBack').textContent = 'Nova ficha';
+      $('btnPrimary').textContent = 'Nova ficha mecânica';
+      $('btnBack').disabled = false;
+      $('btnPrimary').disabled = false;
+    }
+
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function onPrimaryAction(){
+    if (sending) return;
+
+    try {
+      if (!$('screenReview').classList.contains('hidden')) {
+        submitFinal();
+        return;
+      }
+
+      if (!$('screenSuccess').classList.contains('hidden')) {
+        startNewFicha();
+        return;
+      }
+    } catch (e) {
+      var msg = e && e.message ? e.message : String(e);
+      if ($('reviewStatus') && !$('screenReview').classList.contains('hidden')) {
+        $('reviewStatus').textContent = 'Erro: ' + msg;
+      }
+    }
+  }
+
+  function onBackAction(){
+    if (sending) return;
+    if (!$('screenReview').classList.contains('hidden')) return setScreen_('sections');
+    if (!$('screenSuccess').classList.contains('hidden')) return startNewFicha();
+  }
+
+  function getBasicValidationErrors_(){
+    const errors = [];
+
+    const avaliador = $('avaliador').value;
+    const analista = $('analista').value;
+    const cliente = String($('cliente').value || '').trim();
+    const celularRaw = $('celular').value;
+    const celularDigits = sanitizePhoneDigits(celularRaw);
+    const placa = normalizePlaca($('placa').value);
+    const marca = $('marca').value;
+    const modelo = $('modelo').value;
+    const modeloOutro = String($('modeloOutro').value || '').trim();
+    const anoFabricacao = $('anoFabricacao').value;
+    const anoModelo = $('anoModeloSelect').value;
+    const km = String($('km').value || '').trim();
+
+    if (!avaliador) errors.push({ field:'avaliador', msg:'Selecione o Avaliador.' });
+    if (!analista) errors.push({ field:'analista', msg:'Selecione o Analista.' });
+    if (!cliente) errors.push({ field:'cliente', msg:'Informe o Cliente.' });
+
+    if (!String(celularRaw || '').trim()) {
+      errors.push({ field:'celular', msg:'Informe o Celular.' });
+    } else if (!validateCelular(celularDigits)) {
+      errors.push({ field:'celular', msg:'Celular inválido. Use um número no padrão (12) 98835-3200.' });
+    }
+
+    if (!placa) {
+      errors.push({ field:'placa', msg:'Informe a Placa.' });
+    } else if (!validatePlaca(placa)) {
+      errors.push({ field:'placa', msg:'Placa inválida. Use ABC1234 ou ABC1D23.' });
+    }
+
+    const marcaFallback = String(state?.plateLookup?.sugestao?.marcaFallbackApi || state?.plateLookup?.sugestao?.marcaSugerida || '').trim();
+    if (!marca && !marcaFallback) errors.push({ field:'placa', msg:'Não foi possível obter a marca do veículo. Toque no lápis para preencher manualmente.' });
+    if (!modelo) errors.push({ field:'placa', msg:'Não foi possível obter o modelo do veículo. Toque no lápis para preencher manualmente.' });
+
+    if (isOutroText(modelo) && !modeloOutro) {
+      errors.push({ field:'modeloOutro', msg:'Descreva o Outro modelo/versão.' });
+    }
+
+    if (!anoFabricacao) errors.push({ field:'placa', msg:'Não foi possível obter o ano de fabricação. Toque no lápis para preencher manualmente.' });
+    if (!anoModelo) errors.push({ field:'placa', msg:'Não foi possível obter o ano modelo. Toque no lápis para preencher manualmente.' });
+    if (!km) errors.push({ field:'km', msg:'Informe o KM atual.' });
+
+    return errors;
+  }
+
+  function buildPrecificacaoPayload_() {
+    const placa = normalizePlaca($('placa').value);
+    const marca = String($('marca').value || '').trim();
+    const modeloSel = String($('modelo').value || '').trim();
+    const modeloOutro = String($('modeloOutro').value || '').trim();
+    const versaoRaw = String($('versao').value || '').trim();
+    const ano = String($('anoModeloSelect').value || '').trim();
+    const km = String($('km').value || '').replace(/\D+/g, '');
+
+    let modeloFonte = isOutroText(modeloSel) ? (modeloOutro || modeloSel) : modeloSel;
+    modeloFonte = String(modeloFonte || '').trim();
+
+    let modeloBase = modeloFonte;
+
+    if (versaoRaw) {
+      const modeloNorm = modeloFonte.toLowerCase().trim();
+      const versaoNorm = versaoRaw.toLowerCase().trim();
+
+      if (modeloNorm === versaoNorm) {
+        modeloBase = (versaoRaw.trim().split(/\s+/)[0] || '').trim();
+      } else if (modeloNorm.includes(versaoNorm)) {
+        modeloBase = modeloFonte.substring(0, modeloNorm.indexOf(versaoNorm)).trim();
+      }
+    }
+
+    if (!modeloBase) {
+      modeloBase = (modeloFonte || versaoRaw || '').trim().split(/\s+/)[0] || '';
+    }
+
+    let versaoFinal = versaoRaw;
+    if (versaoFinal && modeloBase) {
+      const modeloTitle = modeloBase.charAt(0).toUpperCase() + modeloBase.slice(1).toLowerCase();
+      const versaoNorm = versaoFinal.toLowerCase();
+      const modeloNorm = modeloBase.toLowerCase();
+
+      if (!versaoNorm.startsWith(modeloNorm + ' ')) {
+        versaoFinal = (modeloTitle + ' ' + versaoFinal).trim();
+      }
+    }
+
+    return {
+      placa: placa,
+      marca: marca.toUpperCase(),
+      modelo: modeloBase.toLowerCase(),
+      ano: ano,
+      versao: versaoFinal,
+      km: km
+    };
+  }
+
+  function preencherPrecificacaoNaFicha_(res) {
+    if (!res || !res.ok || !res.data) return;
+
+    const data = res.data || {};
+    const valorPrecificador = Math.round(Number(data.valorPrecificador || 0));
+    const valorFipe = Math.round(Number(data.valorFipe || 0));
+
+    $('valorPrecificador').value = valorPrecificador ? String(valorPrecificador) : '';
+    $('valorFipe').value = valorFipe ? String(valorFipe) : '';
+
+    if (!state.fechamento) state.fechamento = {};
+    state.fechamento.valorPrecificador = valorPrecificador;
+    state.fechamento.valorFipe = valorFipe;
+
+    $('statusSave').textContent = 'Precificação automática carregada.';
+  }
+
+  function startPrecificacaoBackground_() {
+    const payload = buildPrecificacaoPayload_();
+
+    if (!payload.marca || !payload.modelo || !payload.ano || !payload.versao || !payload.km) {
+      $('statusSave').textContent = '';
+      return;
+    }
+
+    $('statusSave').textContent = 'Consultando precificador e FIPE...';
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (!res || !res.ok) {
+          $('statusSave').textContent = 'Precificação automática não localizada.';
+          return;
+        }
+
+        preencherPrecificacaoNaFicha_(res);
+      })
+      .withFailureHandler(function() {
+        $('statusSave').textContent = 'Precificação automática não localizada.';
+      })
+      .consultarPrecificacaoFicha(payload);
+  }
+
+  function goSections(){
+    $('statusBasic').textContent = '';
+
+    var placa = normalizePlaca($('placa').value);
+    $('placa').value = placa;
+
+    var celularDigits = sanitizePhoneDigits($('celular').value);
+    $('celular').value = formatPhoneMask(celularDigits);
+
+    var errors = getBasicValidationErrors_();
+
+    if (errors.length) {
+      $('statusBasic').textContent = errors[0].msg;
+
+      var firstField = $(errors[0].field);
+      if (firstField && typeof firstField.focus === 'function') {
+        firstField.focus();
+      }
+
+      return;
+    }
+
+    setScreen_('sections');
+    startPrecificacaoBackground_();
+  }
+
+  function renderChecklist(containerId, items, targetArray){
+    const root = $(containerId);
+    root.innerHTML = '';
+
+    (items || []).forEach(txt => {
+      const item = document.createElement('div');
+      item.className = 'stackChoiceItem' + (targetArray.includes(txt) ? ' on' : '');
+      item.innerHTML = `
+        <span class="stackChoiceItemMark">✓</span>
+        <span class="stackChoiceItemText">${escapeHtml(txt)}</span>
+      `;
+
+      item.onclick = () => {
+        const idx = targetArray.indexOf(txt);
+        if (idx >= 0) {
+          targetArray.splice(idx, 1);
+          item.classList.remove('on');
+        } else {
+          targetArray.push(txt);
+          item.classList.add('on');
+        }
+      };
+
+      root.appendChild(item);
+    });
+  }
+
+  function secBadge(s){
+    if (!s) return '<span class="badge pend">Pendente</span>';
+    if (!s.tem) return '<span class="badge ok">OK</span>';
+    if (!s.valor) return '<span class="badge warn">RUIM (sem valor)</span>';
+    return '<span class="badge warn">RUIM ' + moneyBr(s.valor) + '</span>';
+  }
+
+  function buildSectionItemsSummary_(s){
+    if (!s || !s.tem) return 'sem apontamentos';
+    const itens = Array.isArray(s.itens) ? [...s.itens] : [];
+    const outro = String(s.outro || '').trim();
+    const lista = itens.filter(x => !isOutroText(x));
+    if (outro) lista.push(outro);
+    if (!lista.length) return itens.some(x => isOutroText(x)) ? 'outro' : 'sem itens detalhados';
+    return lista.map(x => String(x).toLowerCase()).join(', ');
+  }
+
+  function buildSectionSummaryText(itens, outroTxt){
+    itens = Array.isArray(itens) ? itens : [];
+    const outro = String(outroTxt || '').trim();
+
+    const lista = [];
+    itens.forEach(x=>{
+      if (!isOutroText(x)) lista.push(String(x || '').trim());
+    });
+
+    if (outro) lista.push(outro);
+    if (!lista.length) return 'nenhum item selecionado.';
+    return lista.length + ' peça(s) selecionada(s): ' + lista.map(x => String(x).toLowerCase()).join(', ');
+  }
+
+  function renderSectionsList(){
+    const root = $('sectionsList');
+    root.innerHTML = '';
+
+    SECTIONS.forEach(sec=>{
+      const s = ensureSectionState_(sec.key);
+      const detalhes = s.tem ? buildSectionItemsSummary_(s) : '';
+      const isExpanded = expandedSectionKey === sec.key;
+      const items = sec.cat ? getCatalogList_(sec.cat) : [];
+      const showOutro = (s.itens || []).some(x => isOutroText(x));
+      const step = s.uiStep || 'choice';
+
+      const itemsHtml = sec.cat ? items.map(txt => {
+        const on = (s.itens || []).includes(txt) ? 'on' : '';
+        const safeTxt = String(txt).replace(/'/g, '&#039;');
+        return `
+          <div
+            class="itemChoice ${on}"
+            data-section-key="${sec.key}"
+            data-value="${escapeHtml(txt)}"
+            onclick="toggleInlineItemChoice('${sec.key}', '${safeTxt}', this)"
+          >
+            <span class="itemChoiceMark">✓</span>
+            <span class="itemChoiceText">${escapeHtml(txt)}</span>
+          </div>
+        `;
+      }).join('') : '';
+
+      const div = document.createElement('div');
+      div.className = 'secItem';
+      div.innerHTML = `
+        <div class="secHead">
+          <div style="min-width:0;flex:1">
+            <div style="font-weight:900;font-size:16px">${sec.label}</div>
+            <div class="small">${sec.cat ? 'Checklist + valor inteiro' : 'Valor inteiro (sem checklist por enquanto)'}</div>
+            ${detalhes ? `<div class="small" style="margin-top:6px;text-transform:lowercase">${escapeHtml(detalhes)}</div>` : ''}
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:center">
+            ${secBadge(s)}
+            <button class="btn ghost" style="width:auto;padding:12px 14px;border-radius:16px" type="button" onclick="toggleSectionInline('${sec.key}')">
+              ${isExpanded ? 'Fechar' : 'Abrir'}
+            </button>
+          </div>
+        </div>
+
+        ${isExpanded ? `
+          <div class="inlineEditor">
+            ${step === 'choice' ? `
+              <div class="small" style="text-align:center;font-size:16px;font-weight:900;color:#111;margin:10px 0">
+                Tem apontamento?
+              </div>
+              <div class="row" style="margin-top:10px">
+                <button class="btn ghost" type="button" onclick="setSectionNoInline('${sec.key}')">Não</button>
+                <button class="btn primary" type="button" onclick="setSectionYesInline('${sec.key}')">Sim</button>
+              </div>
+            ` : ''}
+
+            ${step === 'items' ? `
+              ${sec.cat ? `
+                <div class="small">Selecione os itens apontados:</div>
+
+                <div class="itemsToolbar">
+                  <input id="itemsSearch_${sec.key}" class="itemsSearch" type="text" placeholder="Buscar peça/item..." oninput="filterInlineItems('${sec.key}')" />
+                  <div class="itemsMeta">
+                    <span id="itemsCounter_${sec.key}">${(s.itens || []).length} item(ns) selecionado(s)</span>
+                    <span id="itemsVisibleInfo_${sec.key}"></span>
+                  </div>
+                </div>
+
+                <div id="itemsContainer_${sec.key}" class="itemsList">${itemsHtml}</div>
+              ` : `
+                <div class="small">Esta seção não possui checklist. Clique em pronto para informar o valor.</div>
+              `}
+
+              ${showOutro ? `
+                <label>Outro (descreva)</label>
+                <input value="${escapeHtml(s.outro || '')}" oninput="setInlineOutro('${sec.key}', this.value)">
+              ` : ''}
+
+              <div class="inlineActions">
+                <button class="btn ghost" type="button" onclick="backInlineToChoice('${sec.key}')">Voltar</button>
+                <button class="btn primary" type="button" onclick="goInlineToValue('${sec.key}')">Pronto</button>
+              </div>
+            ` : ''}
+
+            ${step === 'value' ? `
+              ${sec.cat ? `
+                <div class="summaryBox">
+                  <div class="summaryTitle">resumo do apontamento</div>
+                  <div class="summaryText">${escapeHtml(buildSectionSummaryText((s.itens || []), s.outro || ''))}</div>
+                </div>
+              ` : ''}
+
+              <div class="small" style="margin-top:10px">Informe o valor (inteiro)</div>
+              <input
+                id="inlineValue_${sec.key}"
+                type="tel"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                value="${escapeHtml(String(s.valor || ''))}"
+                onkeyup="setInlineValor('${sec.key}', this)"
+                onchange="setInlineValor('${sec.key}', this)"
+                onblur="setInlineValor('${sec.key}', this)"
+              >
+
+              <div class="inlineActions">
+                <button class="btn ghost" type="button" onclick="backInlineToItems('${sec.key}')">Voltar</button>
+                <button class="btn primary" type="button" onclick="saveInlineSection('${sec.key}')">Salvar seção</button>
+              </div>
+            ` : ''}
+
+            <div class="muted" id="inlineMsg_${sec.key}"></div>
+          </div>
+        ` : ''}
+      `;
+
+      root.appendChild(div);
+
+      if (isExpanded && step === 'items' && sec.cat) {
+        setTimeout(() => filterInlineItems(sec.key), 0);
+      }
+    });
+  }
+
+  function toggleSectionInline(key){
+    if (expandedSectionKey === key) {
+      expandedSectionKey = '';
+      renderSectionsList();
+      return;
+    }
+
+    expandedSectionKey = key;
+    const s = ensureSectionState_(key);
+    if (!s.uiStep) s.uiStep = 'choice';
+    renderSectionsList();
+  }
+
+  function setSectionNoInline(key){
+    state.secoes[key] = {
+      tem:false,
+      itens:[],
+      outro:'',
+      valor:0,
+      uiStep:'choice'
+    };
+    expandedSectionKey = '';
+    renderSectionsList();
+    recalcTotal();
+  }
+
+  function setSectionYesInline(key){
+    const sec = SECTIONS.find(x => x.key === key);
+    const s = ensureSectionState_(key);
+    s.tem = true;
+    s.uiStep = sec && sec.cat ? 'items' : 'value';
+    state.secoes[key] = s;
+    renderSectionsList();
+  }
+
+  function backInlineToChoice(key){
+    const s = ensureSectionState_(key);
+    s.uiStep = 'choice';
+    state.secoes[key] = s;
+    renderSectionsList();
+  }
+
+  function backInlineToItems(key){
+    const sec = SECTIONS.find(x => x.key === key);
+    const s = ensureSectionState_(key);
+    s.uiStep = sec && sec.cat ? 'items' : 'choice';
+    state.secoes[key] = s;
+    renderSectionsList();
+  }
+
+  function toggleInlineItemChoice(key, value, el){
+    const s = ensureSectionState_(key);
+    const msg = $('inlineMsg_' + key);
+    if (msg) msg.textContent = '';
+
+    const idx = s.itens.indexOf(value);
+    const hadOutro = s.itens.some(x => isOutroText(x));
+
+    if (idx >= 0) s.itens.splice(idx, 1);
+    else s.itens.push(value);
+
+    const hasOutro = s.itens.some(x => isOutroText(x));
+    if (!hasOutro) s.outro = '';
+
+    state.secoes[key] = s;
+
+    if (el) el.classList.toggle('on', s.itens.includes(value));
+
+    const counter = $('itemsCounter_' + key);
+    if (counter) counter.textContent = s.itens.length + ' item(ns) selecionado(s)';
+
+    if (hadOutro !== hasOutro) {
+      renderSectionsList();
+    }
+  }
+
+  function goInlineToValue(key){
+    const sec = SECTIONS.find(x => x.key === key);
+    const s = ensureSectionState_(key);
+    const msg = $('inlineMsg_' + key);
+
+    if (msg) msg.textContent = '';
+
+    const itens = Array.isArray(s.itens) ? s.itens : [];
+    const outro = String(s.outro || '').trim();
+
+    if (sec && sec.cat && !itens.length) {
+      if (msg) msg.textContent = 'Selecione ao menos 1 item apontado antes de continuar.';
+      return;
+    }
+
+    const hasOutro = itens.some(x => isOutroText(x));
+    if (hasOutro && !outro) {
+      if (msg) msg.textContent = 'Você selecionou "Outro". Descreva o apontamento antes de continuar.';
+      return;
+    }
+
+    s.uiStep = 'value';
+    state.secoes[key] = s;
+    renderSectionsList();
+  }
+
+  function setInlineOutro(key, value){
+    const s = ensureSectionState_(key);
+    s.outro = value || '';
+    state.secoes[key] = s;
+  }
+
+  function setInlineValor(key, el){
+    const s = ensureSectionState_(key);
+    const clean = String(el && el.value ? el.value : '').replace(/\D+/g,'');
+    if (el) el.value = clean;
+    s.valor = clean;
+    state.secoes[key] = s;
+  }
+
+  function filterInlineItems(key){
+    const searchEl = $('itemsSearch_' + key);
+    const container = $('itemsContainer_' + key);
+    const counter = $('itemsCounter_' + key);
+    const visibleInfo = $('itemsVisibleInfo_' + key);
+
+    if (!searchEl || !container) return;
+
+    const term = String(searchEl.value || '').trim().toLowerCase();
+    const rows = container.querySelectorAll('.itemChoice');
+    let visible = 0;
+    let selected = 0;
+
+    rows.forEach(row=>{
+      const txtEl = row.querySelector('.itemChoiceText');
+      const txt = String(txtEl ? txtEl.textContent : '').toLowerCase();
+      const show = !term || txt.includes(term);
+
+      row.style.display = show ? 'flex' : 'none';
+      if (show) visible++;
+      if (row.classList.contains('on')) selected++;
+    });
+
+    if (visibleInfo) visibleInfo.textContent = visible + ' item(ns) visível(is)';
+    if (counter) counter.textContent = selected + ' item(ns) selecionado(s)';
+  }
+
+  function saveInlineSection(key){
+    const sec = SECTIONS.find(x => x.key === key);
+    const s = ensureSectionState_(key);
+    const msg = $('inlineMsg_' + key);
+
+    if (!msg) return;
+    msg.textContent = '';
+
+    if (!s.tem) {
+      state.secoes[key] = defaultSectionState_();
+      expandedSectionKey = '';
+      renderSectionsList();
+      recalcTotal();
+      return;
+    }
+
+    const itens = Array.isArray(s.itens) ? [...s.itens] : [];
+    const outro = String(s.outro || '').trim();
+    const valueInput = $('inlineValue_' + key);
+    const valorTxt = valueInput
+      ? String(valueInput.value || '').replace(/\D+/g,'')
+      : String(s.valor || '').replace(/\D+/g,'');
+    const valor = Number(valorTxt || 0);
+
+    if (sec && sec.cat && !itens.length) {
+      msg.textContent = 'Selecione ao menos 1 item apontado.';
+      return;
+    }
+
+    const hasOutro = itens.some(x => isOutroText(x));
+    if (hasOutro && !outro) {
+      msg.textContent = 'Você selecionou "Outro". Descreva o apontamento.';
+      return;
+    }
+
+    if (!valor || valor <= 0) {
+      msg.textContent = 'Informe o valor do apontamento antes de salvar.';
+      return;
+    }
+
+    $('statusSave').textContent = 'Atualizando seção...';
+
+    state.secoes[key] = {
+      tem:true,
+      itens,
+      outro: hasOutro ? outro : '',
+      valor: valorTxt,
+      uiStep:'choice'
+    };
+
+    recalcTotal();
+    expandedSectionKey = '';
+    renderSectionsList();
+
+    $('statusSave').textContent = '';
+  }
+
+  function recalcTotal(){
+    let total = 0;
+    Object.values(state.secoes || {}).forEach(s=>{
+      if (s && s.tem && Number(s.valor || 0) > 0) {
+        total += Number(s.valor || 0);
+      }
+    });
+    $('valorTotalFicha').value = String(total);
+  }
+
+  function collectFormIntoState_(){
+    const modeloSel = $('modelo').value;
+    const modeloBase = isOutroText(modeloSel)
+      ? (($('modeloOutro').value || modeloSel).trim())
+      : String(modeloSel || '').trim();
+
+    const versaoFinal = String($('versao').value || '').trim();
+
+    let modeloFinal = buildModeloVersaoDisplay_(modeloBase, versaoFinal);
+
+    const placaNorm = normalizePlaca($('placa').value);
+    const celularDigits = sanitizePhoneDigits($('celular').value);
+    const anoFabricacao = $('anoFabricacao').value;
+    const anoModelo = $('anoModeloSelect').value;
+
+    $('placa').value = placaNorm;
+    $('celular').value = formatPhoneMask(celularDigits);
+
+    if (!validatePlaca(placaNorm)){
+      $('statusSave').textContent = 'Placa inválida. Corrija antes de continuar.';
+      setScreen_('basic');
+      $('statusBasic').textContent = 'Placa inválida. Corrija antes de continuar.';
+      return false;
+    }
+
+    if (!validateCelular(celularDigits)){
+      $('statusSave').textContent = 'Celular inválido. Corrija antes de continuar.';
+      setScreen_('basic');
+      $('statusBasic').textContent = 'Celular inválido. Corrija antes de continuar.';
+      return false;
+    }
+
+    if (!anoFabricacao || !anoModelo){
+      $('statusSave').textContent = 'Informe ano fabricação e ano modelo.';
+      setScreen_('basic');
+      $('statusBasic').textContent = 'Informe ano fabricação e ano modelo.';
+      return false;
+    }
+
+    if (String(state.mercosulCheck?.askedPlaca || '') !== placaNorm ||
+        state.mercosulCheck?.placaCarroMercosul === null ||
+        state.mercosulCheck?.documentoMercosul === null) {
+      $('statusSave').textContent = 'Responda a conferência da placa Mercosul antes de continuar.';
+      setScreen_('basic');
+      $('statusBasic').textContent = 'Responda a conferência da placa Mercosul antes de continuar.';
+      openMercosulModal_(placaNorm);
+      return false;
+    }
+
+    state.basico = {
+      avaliador: $('avaliador').value,
+      analista: $('analista').value,
+      dataHora: $('dataHora').value,
+      cliente: $('cliente').value,
+      celular: celularDigits,
+      email: $('email').value,
+      placa: placaNorm,
+      marca: getMarcaOperacional_(),
+      modeloVersao: modeloFinal,
+      versao: versaoFinal,
+      anoModelo: anoFabricacao + '/' + anoModelo,
+      cor: $('cor').value,
+      kmAtual: sanitizeInt($('km').value)
+    };
+
+    recalcTotal();
+
+    state.fechamento = {
+      valorTotalFicha: sanitizeInt($('valorTotalFicha').value),
+      valorPrecificador: sanitizeInt($('valorPrecificador').value),
+      valorFipe: sanitizeInt($('valorFipe').value),
+      debitosMulta: sanitizeInt($('debitosMulta').value),
+      quitacao: $('quitacao').value,
+      clienteQuer: sanitizeInt($('clienteQuer').value),
+      observacoes: buildFinalObservacoes_()
+    };
+
+    return true;
+  }
+
+  function validateSectionsBeforeReview_(){
+    for (const sec of SECTIONS) {
+      const s = state.secoes[sec.key];
+      if (!s || !s.tem) continue;
+
+      const itens = Array.isArray(s.itens) ? s.itens : [];
+      const outro = String(s.outro || '').trim();
+      const valor = Number(s.valor || 0);
+
+      if (sec.cat && !itens.length) {
+        $('statusSave').textContent = 'A seção "' + sec.label + '" precisa ter ao menos 1 item apontado.';
+        return false;
+      }
+
+      if (!valor || valor <= 0) {
+        $('statusSave').textContent = 'A seção "' + sec.label + '" foi marcada com apontamento e precisa ter valor informado.';
+        return false;
+      }
+
+      const hasOutro = itens.some(x => isOutroText(x));
+      if (hasOutro && !outro) {
+        $('statusSave').textContent = 'Você selecionou "Outro" em "' + sec.label + '". Descreva o apontamento antes de continuar.';
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function goReview(){
+    if (!collectFormIntoState_()) return;
+    if (!validateSectionsBeforeReview_()) return;
+
+    renderReview();
+    $('statusSave').textContent = '';
+    setScreen_('review');
+  }
+
+  function renderReview(){
+    const root = $('reviewContent');
+    root.innerHTML = '';
+
+    const partsAno = String(state.basico.anoModelo || '').split('/');
+    const anoFab = partsAno[0] || '';
+    const anoMod = partsAno[1] || '';
+
+    const basicCard = document.createElement('div');
+    basicCard.className = 'reviewBlock';
+    basicCard.innerHTML = `
+      <div class="sectionTitle">Dados básicos</div>
+      ${reviewLine_('Avaliador', textOrDash(state.basico.avaliador))}
+      ${reviewLine_('Analista', textOrDash(state.basico.analista))}
+      ${reviewLine_('Data e hora', textOrDash(state.basico.dataHora))}
+      ${reviewLine_('Cliente', textOrDash(state.basico.cliente))}
+      ${reviewLine_('Celular', textOrDash(formatPhoneMask(state.basico.celular)))}
+      ${reviewLine_('Email', textOrDash(state.basico.email))}
+      ${reviewLine_('Placa', textOrDash(state.basico.placa))}
+      ${reviewLine_('Marca', textOrDash(state.basico.marca))}
+      ${reviewLine_('Modelo e versão', textOrDash(state.basico.modeloVersao))}
+      ${reviewLine_('Versão', textOrDash(state.basico.versao))}
+      ${reviewLine_('Ano fabricação', textOrDash(anoFab))}
+      ${reviewLine_('Ano modelo', textOrDash(anoMod))}
+      ${reviewLine_('Cor', textOrDash(state.basico.cor))}
+      ${reviewLine_('KM atual', textOrDash(state.basico.kmAtual))}
+    `;
+    root.appendChild(basicCard);
+
+    const apontadas = SECTIONS.filter(sec => state.secoes[sec.key] && state.secoes[sec.key].tem);
+
+    const secWrap = document.createElement('div');
+    secWrap.className = 'reviewBlock';
+    secWrap.innerHTML = '<div class="sectionTitle">Seções apontadas</div>';
+    root.appendChild(secWrap);
+
+    if (!apontadas.length) {
+      const empty = document.createElement('div');
+      empty.className = 'reviewSectionCard';
+      empty.innerHTML = '<div class="reviewValue">Nenhuma seção com apontamento.</div>';
+      secWrap.appendChild(empty);
+    } else {
+      apontadas.forEach(sec=>{
+        const s = state.secoes[sec.key];
+        const detalhes = buildSectionItemsSummary_(s);
+        const valor = moneyBr(s.valor || 0);
+
+        const card = document.createElement('div');
+        card.className = 'reviewSectionCard';
+        card.innerHTML = `
+          <div class="reviewSectionHead">
+            <div class="reviewSectionName">${sec.label}</div>
+            ${secBadge(s)}
+          </div>
+          <div class="reviewLabel">Itens</div>
+          <div class="reviewValue" style="text-transform:lowercase">${escapeHtml(detalhes)}</div>
+          <div class="reviewLabel" style="margin-top:10px">Valor</div>
+          <div class="reviewValue">${escapeHtml(valor)}</div>
+        `;
+        secWrap.appendChild(card);
+      });
+    }
+
+    const checklistCard = document.createElement('div');
+    checklistCard.className = 'reviewBlock';
+    checklistCard.innerHTML = `
+      <div class="sectionTitle">Checklists</div>
+      ${reviewLine_('Opcionais', textOrDash((state.checklists.opcionais || []).join(', ')))}
+      ${reviewLine_('Avaliações', textOrDash((state.checklists.avaliacoes || []).join(', ')))}
+    `;
+    root.appendChild(checklistCard);
+
+    const closeCard = document.createElement('div');
+    closeCard.className = 'reviewBlock';
+    closeCard.innerHTML = `
+      <div class="sectionTitle">Fechamento</div>
+      ${reviewLine_('Valor Total da Ficha', moneyBr(state.fechamento.valorTotalFicha || 0))}
+      ${reviewLine_('Valor do Precificador', moneyBr(state.fechamento.valorPrecificador || 0))}
+      ${reviewLine_('Valor da Fipe', moneyBr(state.fechamento.valorFipe || 0))}
+      ${reviewLine_('Débitos de multa', moneyBr(state.fechamento.debitosMulta || 0))}
+      ${reviewLine_('Possui quitação', textOrDash(state.fechamento.quitacao))}
+      ${reviewLine_('Quanto cliente quer?', moneyBr(state.fechamento.clienteQuer || 0))}
+      ${reviewLine_('Observações Relevantes', textOrDash(buildFinalObservacoes_()))}
+    `;
+    root.appendChild(closeCard);
+  }
+
+  function reviewLine_(label, value){
+    return `
+      <div style="margin-top:12px">
+        <div class="reviewLabel">${escapeHtml(label)}</div>
+        <div class="reviewValue">${escapeHtml(String(value))}</div>
+      </div>
+    `;
+  }
+
+  function setSendingUI_(active, msg){
+    sending = active;
+    $('btnBack').disabled = active;
+    $('btnPrimary').disabled = active;
+    $('btnPrimary').textContent = active ? 'Enviando...' : 'Tudo certo, quero enviar';
+    $('reviewStatus').textContent = msg || '';
+  }
+
+  function submitFinal(){
+    if (sending) return;
+
+    setSendingUI_(true, 'Preparando envio. Aguarde...');
+
+    if (!collectFormIntoState_()) {
+      setSendingUI_(false, '');
+      return;
+    }
+
+    if (!validateSectionsBeforeReview_()) {
+      setSendingUI_(false, '');
+      setScreen_('sections');
+      return;
+    }
+
+    state.meta = state.meta || {};
+    if (!state.meta.submitKey) {
+      state.meta.submitKey = createSubmitKey_();
+      saveDraft_();
+    }
+
+    setSendingUI_(true, 'Enviando ficha, gerando PDF e processando e-mail. Aguarde...');
+
+    google.script.run
+      .withSuccessHandler(res=>{
+        setSendingUI_(false, '');
+        finishSuccessFlow_(res);
+      })
+      .withFailureHandler(err=>{
+        setSendingUI_(false, 'Erro ao enviar: ' + (err?.message || err));
+      })
+      .submitInspection(JSON.parse(JSON.stringify(state)));
+  }
+
+  function finishSuccessFlow_(){
+    clearDraft_();
+
+    const quote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+    $('successQuote').textContent = quote;
+    clearFormForNewFicha_();
+    setScreen_('success');
+  }
+
+  function clearFormForNewFicha_(){
+    resetStateData_();
+
+    $('cliente').value = '';
+    $('celular').value = '';
+    $('email').value = '';
+    $('placa').value = '';
+    $('km').value = '';
+    $('modeloOutro').value = '';
+    $('versao').value = '';
+    $('observacoes').value = '';
+
+    $('avaliador').selectedIndex = 0;
+    $('analista').selectedIndex = 0;
+    $('marca').selectedIndex = 0;
+    $('modelo').selectedIndex = 0;
+    $('anoFabricacao').selectedIndex = 0;
+    $('anoModeloSelect').selectedIndex = 0;
+    $('cor').selectedIndex = 0;
+    $('quitacao').selectedIndex = 0;
+
+    $('valorTotalFicha').value = '';
+    $('valorPrecificador').value = '';
+    $('valorFipe').value = '';
+    $('debitosMulta').value = '';
+    $('clienteQuer').value = '';
+
+    $('modeloOutroWrap').classList.add('hidden');
+    $('plateWarnBox').classList.add('hidden');
+    $('plateWarnBox').textContent = '';
+    updateAutoObsBox_();
+    closeMercosulModal_();
+    clearAutoClasses_();
+    unlockVehicleFields_();
+
+    $('vehicleFieldsWrap').classList.add('hidden');
+    refreshVehiclePreview_();
+
+    $('statusBasic').textContent = 'App ' + appVersion + ' | Catálogos: ' + Object.keys(catalogs).length;
+    $('statusSave').textContent = '';
+    $('reviewStatus').textContent = '';
+
+    setNowDatetime_();
+    renderSectionsList();
+    renderChecklist('opcionaisList', getCatalogList_('opcionais'), state.checklists.opcionais);
+    renderChecklist('avaliacoesList', getCatalogList_('avaliacao'), state.checklists.avaliacoes);
+  }
+
+  function startNewFicha(){
+    setScreen_('basic');
+  }
+
+  function openAdminPasswordModal(){
+    $('adminPasswordInput').value = '';
+    $('adminPasswordMsg').textContent = '';
+    $('adminPasswordBack').style.display = 'flex';
+  }
+
+  function closeAdminPasswordModal(){
+    $('adminPasswordBack').style.display = 'none';
+  }
+
+  function unlockAdminPanel(){
+    const password = $('adminPasswordInput').value || '';
+    $('adminPasswordMsg').textContent = 'Validando...';
+
+    google.script.run.withSuccessHandler(res=>{
+      if (!res.ok) {
+        $('adminPasswordMsg').textContent = 'Senha inválida.';
+        return;
+      }
+
+      adminSessionPassword = password;
+
+      google.script.run.withSuccessHandler(data=>{
+        adminSettings = data.settings;
+        renderAdminConfig();
+        closeAdminPasswordModal();
+        $('adminConfigBack').style.display = 'flex';
+      }).withFailureHandler(err=>{
+        $('adminPasswordMsg').textContent = 'Erro ao carregar configurações: ' + (err?.message || err);
+      }).getEmailRoutingSettings(password);
+
+    }).withFailureHandler(err=>{
+      $('adminPasswordMsg').textContent = 'Erro: ' + (err?.message || err);
+    }).verifyAdminPassword(password);
+  }
+
+  function closeAdminConfig(){
+    $('adminConfigBack').style.display = 'none';
+    $('adminConfigMsg').textContent = '';
+  }
+
+  function renderAdminConfig(){
+    $('cfgTestMode').checked = !!adminSettings.testMode;
+    $('cfgAdminEmail').value = adminSettings.adminEmail || '';
+    $('cfgLeaderEmail').value = adminSettings.leaderEmail || '';
+    $('cfgCurrentPassword').value = '';
+    $('cfgNewPassword').value = '';
+
+    renderRouteList('analistasRoutes', adminSettings.analistas || {}, 'analista');
+    renderRouteList('avaliadoresRoutes', adminSettings.avaliadores || {}, 'avaliador');
+
+    $('adminConfigMsg').innerHTML = `
+      <span class="tag">${adminSettings.testMode ? 'Modo teste ativo' : 'Modo produção'}</span>
+    `;
+  }
+
+  function renderRouteList(containerId, obj, type){
+    const root = $(containerId);
+    root.innerHTML = '';
+    const entries = Object.keys(obj || {});
+
+    if (!entries.length) {
+      addRouteRow(type, '', '');
+      return;
+    }
+
+    entries.forEach(name=>{
+      addRouteRow(type, name, obj[name]);
+    });
+  }
+
+  function addRouteRow(type, name='', email=''){
+    const root = $(type === 'analista' ? 'analistasRoutes' : 'avaliadoresRoutes');
+    const row = document.createElement('div');
+    row.className = 'routeRow';
+    row.innerHTML = `
+      <div>
+        <label style="margin:0 0 6px">${type === 'analista' ? 'Analista' : 'Avaliador'}</label>
+        <input class="routeName" value="${escapeHtml(name)}" placeholder="${type === 'analista' ? 'Nome do analista' : 'Nome do avaliador'}" />
+      </div>
+      <div>
+        <label style="margin:0 0 6px">E-mail</label>
+        <input class="routeEmail" inputmode="email" value="${escapeHtml(email)}" placeholder="email@empresa.com" />
+      </div>
+      <div>
+        <button class="btn danger" style="padding:14px 12px" type="button">Remover</button>
+      </div>
+    `;
+    row.querySelector('button').onclick = ()=> row.remove();
+    root.appendChild(row);
+  }
+
+  function collectRouteMap(containerId){
+    const root = $(containerId);
+    const rows = Array.from(root.querySelectorAll('.routeRow'));
+    const out = {};
+    rows.forEach(row=>{
+      const name = row.querySelector('.routeName').value.trim();
+      const email = row.querySelector('.routeEmail').value.trim();
+      if (name && email) out[name] = email;
+    });
+    return out;
+  }
+
+  function saveAdminConfig(){
+    const payload = {
+      testMode: $('cfgTestMode').checked,
+      adminEmail: $('cfgAdminEmail').value.trim(),
+      leaderEmail: $('cfgLeaderEmail').value.trim(),
+      analistas: collectRouteMap('analistasRoutes'),
+      avaliadores: collectRouteMap('avaliadoresRoutes')
+    };
+
+    $('adminConfigMsg').textContent = 'Salvando configurações...';
+
+    google.script.run.withSuccessHandler(res=>{
+      adminSettings = res.settings;
+      $('adminConfigMsg').textContent = 'Configurações salvas com sucesso.';
+      renderAdminConfig();
+    }).withFailureHandler(err=>{
+      $('adminConfigMsg').textContent = 'Erro ao salvar: ' + (err?.message || err);
+    }).saveEmailRoutingSettings(adminSessionPassword, payload);
+  }
+
+  function changeAdminPassword(){
+    const currentPassword = $('cfgCurrentPassword').value || '';
+    const newPassword = $('cfgNewPassword').value || '';
+
+    if (!currentPassword || !newPassword) {
+      $('adminConfigMsg').textContent = 'Informe a senha atual e a nova senha.';
+      return;
+    }
+
+    $('adminConfigMsg').textContent = 'Alterando senha...';
+
+    google.script.run.withSuccessHandler(()=>{
+      adminSessionPassword = newPassword;
+      $('cfgCurrentPassword').value = '';
+      $('cfgNewPassword').value = '';
+      $('adminConfigMsg').textContent = 'Senha alterada com sucesso.';
+    }).withFailureHandler(err=>{
+      $('adminConfigMsg').textContent = 'Erro ao alterar senha: ' + (err?.message || err);
+    }).setAdminPassword(currentPassword, newPassword);
+  }
+
+  bootstrap();
+</script>
+</body>
+</html>

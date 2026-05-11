@@ -6,32 +6,36 @@
     name="viewport"
     content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
   />
-  <meta name="theme-color" content="#111111" />
+  <meta name="theme-color" content="#151515" />
 
   <style>
     :root{
-      --bg:#f6f6f6;
+      --bg:#f2f3ef;
       --card:#fff;
-      --text:#111;
-      --muted:#666;
-      --line:#e7e7e7;
-      --primary:#111;
-      --auto:#eef7ff;
-      --autoLine:#7fb0ff;
-      --warnBg:#fff8dd;
-      --warnLine:#ead48a;
+      --text:#151515;
+      --muted:#667085;
+      --line:#d9ddd5;
+      --primary:#151515;
+      --accent:#f4c542;
+      --accentSoft:#fff4c7;
+      --auto:#eaf4ff;
+      --autoLine:#6aa8ff;
+      --warnBg:#fff6d8;
+      --warnLine:#e4c45d;
+      --good:#e8f7ed;
+      --goodLine:#8bc79d;
 
       --fontScale:1;
-      --fs-base:calc(16px * var(--fontScale));
-      --fs-label:calc(15px * var(--fontScale));
-      --fs-input:max(16px, calc(16px * var(--fontScale)));
-      --fs-title:calc(20px * var(--fontScale));
-      --fs-small:calc(14px * var(--fontScale));
-      --fs-appbar:calc(18px * var(--fontScale));
-      --fs-btn:calc(17px * var(--fontScale));
-      --fs-item:calc(15px * var(--fontScale));
-      --touch:max(50px, calc(52px + ((var(--fontScale) - 1) * 8px)));
-      --radius:14px;
+      --fs-base:max(17px, calc(17px * var(--fontScale)));
+      --fs-label:max(14px, calc(14px * var(--fontScale)));
+      --fs-input:max(18px, calc(18px * var(--fontScale)));
+      --fs-title:max(21px, calc(22px * var(--fontScale)));
+      --fs-small:max(15px, calc(15px * var(--fontScale)));
+      --fs-appbar:max(18px, calc(18px * var(--fontScale)));
+      --fs-btn:max(18px, calc(18px * var(--fontScale)));
+      --fs-item:max(16px, calc(16px * var(--fontScale)));
+      --touch:max(58px, calc(58px + ((var(--fontScale) - 1) * 10px)));
+      --radius:8px;
     }
 
     html, body {
@@ -48,7 +52,8 @@
     body{
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
       margin:0;
-      background:var(--bg);
+      background:
+        linear-gradient(180deg, #151515 0, #151515 116px, var(--bg) 116px, var(--bg) 100%);
       color:var(--text);
       font-size:var(--fs-base);
       line-height:1.45;
@@ -66,9 +71,9 @@
     .appbar{
       position:sticky;
       top:0;
-      background:#111;
+      background:#151515;
       color:#fff;
-      padding:12px 16px;
+      padding:12px 16px 10px;
       font-weight:900;
       font-size:var(--fs-appbar);
       z-index:100;
@@ -77,6 +82,7 @@
       justify-content:space-between;
       gap:12px;
       min-height:56px;
+      border-bottom:1px solid rgba(255,255,255,.08);
     }
 
     .envBanner{
@@ -84,9 +90,9 @@
       position:sticky;
       top:60px;
       z-index:99;
-      background:#fff2b8;
+      background:var(--accentSoft);
       color:#111;
-      border-bottom:1px solid #e2c85c;
+      border-bottom:1px solid var(--warnLine);
       padding:8px 16px;
       font-size:13px;
       font-weight:900;
@@ -120,8 +126,8 @@
 
     .fontBtn,
     .gearBtn{
-      min-width:38px;
-      height:38px;
+      min-width:40px;
+      height:40px;
       border-radius:10px;
       border:1px solid rgba(255,255,255,.25);
       background:rgba(255,255,255,.08);
@@ -134,17 +140,42 @@
     }
 
     .plateInput{
-      min-height:64px !important;
-      font-size:max(22px, calc(24px * var(--fontScale))) !important;
+      min-height:76px !important;
+      font-size:max(28px, calc(30px * var(--fontScale))) !important;
       font-weight:950;
-      letter-spacing:2px;
+      letter-spacing:3px;
       text-align:center;
       text-transform:uppercase;
+      background:#fff !important;
+      border:2px solid #151515 !important;
+      box-shadow:0 10px 24px rgba(0,0,0,.08);
     }
 
     .vehicleAutoCard{
-      background:#f7fbff;
-      border-color:#c9dcff;
+      background:var(--auto);
+      border-color:var(--autoLine);
+      color:#102033;
+      font-size:16px;
+    }
+
+    .vehicleAutoCard .small{
+      color:#102033 !important;
+      font-size:16px;
+      line-height:1.6;
+    }
+
+    .iconEditBtn{
+      width:44px !important;
+      min-width:44px !important;
+      min-height:44px !important;
+      height:44px;
+      padding:0 !important;
+      border-radius:50% !important;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px !important;
+      flex:0 0 auto;
     }
 
     .fieldGroup.hidden{
@@ -152,27 +183,28 @@
     }
 
     .wrap{
-      padding:16px;
+      padding:12px;
       max-width:760px;
       margin:0 auto;
       padding-bottom:calc(96px + env(safe-area-inset-bottom));
     }
 
     .card{
-      background:#fff;
+      background:var(--card);
       border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      margin-bottom:16px;
-      box-shadow:none;
+      border-radius:var(--radius);
+      padding:16px;
+      margin-bottom:12px;
+      box-shadow:0 12px 32px rgba(25,25,25,.08);
       overflow:hidden;
     }
 
     .title{
       font-weight:900;
       font-size:var(--fs-title);
-      margin:0 0 14px;
+      margin:0 0 16px;
       line-height:1.25;
+      letter-spacing:0;
     }
 
     .sectionTitle{
@@ -186,10 +218,11 @@
     label{
       display:block;
       font-size:var(--fs-label);
-      font-weight:800;
-      color:#333;
-      margin:16px 0 8px;
+      font-weight:900;
+      color:#344054;
+      margin:14px 0 7px;
       line-height:1.35;
+      letter-spacing:0;
     }
 
     input:not([type="checkbox"]):not([type="radio"]),
@@ -197,16 +230,16 @@
     textarea{
       width:100%;
       min-height:var(--touch);
-      padding:14px 16px;
+      padding:15px 16px;
       border-radius:var(--radius);
-      border:1px solid #cfcfcf;
+      border:1px solid #cfd5cc;
       font-size:var(--fs-input);
-      background:#fff;
+      background:#fbfcfa;
       outline:none;
       appearance:none;
       -webkit-appearance:none;
       box-shadow:none;
-      transition:border-color .15s ease, background-color .15s ease;
+      transition:border-color .15s ease, background-color .15s ease, box-shadow .15s ease;
       scroll-margin-bottom:120px;
     }
 
@@ -249,14 +282,15 @@
     }
 
     input:focus,select:focus,textarea:focus{
-      border-color:#888;
+      border-color:#151515;
+      box-shadow:0 0 0 3px rgba(244,197,66,.32);
     }
 
     .btn{
       width:100%;
-      min-height:54px;
-      padding:14px 16px;
-      border-radius:14px;
+      min-height:58px;
+      padding:15px 16px;
+      border-radius:var(--radius);
       border:0;
       font-weight:900;
       font-size:var(--fs-btn);
@@ -270,13 +304,13 @@
       cursor:not-allowed;
     }
 
-    .primary{background:#111;color:#fff}
-    .ghost{background:#fff;border:1px solid #111;color:#111}
+    .primary{background:#151515;color:#fff}
+    .ghost{background:#fff;border:1px solid #151515;color:#151515}
     .danger{background:#8d1d1d;color:#fff}
 
     .muted{
-      font-size:14px;
-      color:#666;
+      font-size:15px;
+      color:var(--muted);
       margin-top:10px;
       line-height:1.45;
     }
@@ -307,13 +341,13 @@
       border-radius:12px;
       background:var(--warnBg);
       border:1px solid var(--warnLine);
-      font-size:14px;
+      font-size:15px;
       line-height:1.55;
     }
 
     .secItem{
-      border:1px solid #e7e7e7;
-      border-radius:14px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
       margin-top:12px;
       background:#fff;
       padding:16px;
@@ -329,13 +363,13 @@
     .badge{
       font-size:13px;
       padding:7px 12px;
-      border-radius:999px;
+      border-radius:var(--radius);
       border:1px solid #ddd;
       white-space:nowrap;
       font-weight:800;
     }
 
-    .ok{background:#eaffea}
+    .ok{background:var(--good);border-color:var(--goodLine)}
     .warn{background:#fff2df}
     .pend{background:#f3f3f3}
 
@@ -367,7 +401,7 @@
       padding:12px 16px calc(12px + env(safe-area-inset-bottom));
       z-index:120;
       backdrop-filter:saturate(140%) blur(6px);
-      box-shadow:0 -8px 20px rgba(0,0,0,.05);
+      box-shadow:0 -10px 28px rgba(0,0,0,.08);
     }
 
     .bottomInner{
@@ -687,13 +721,13 @@
 
     @media (max-width:640px){
       .wrap{
-        padding:14px;
-        padding-bottom:40px;
+        padding:10px;
+        padding-bottom:calc(104px + env(safe-area-inset-bottom));
       }
 
       .card{
-        padding:16px;
-        border-radius:16px;
+        padding:14px;
+        border-radius:8px;
       }
 
       .routeRow{
@@ -711,13 +745,13 @@
       }
 
       .bottomInner .btn{
-        font-size:16px;
+        font-size:17px;
       }
     }
 
     @media (min-width:768px){
       .wrap{padding:24px}
-      .card{padding:24px}
+      .card{padding:24px;border-radius:8px}
       .title{font-size:26px}
       label{font-size:17px}
       input,select,textarea{font-size:18px;padding:16px 18px}
@@ -757,9 +791,8 @@
           <button
             id="btnEditVehicle"
             type="button"
-            class="btn ghost"
+            class="btn ghost iconEditBtn"
             onclick="toggleVehicleFieldsEditor_()"
-            style="width:auto;min-height:40px;padding:8px 12px;font-size:14px;border-radius:12px"
             title="Editar manualmente"
           >✏️</button>
         </div>
@@ -796,6 +829,9 @@
         <select id="cor"></select>
       </div>
 
+      <label>KM Atual (inteiro)</label>
+      <input id="km" inputmode="numeric" pattern="[0-9]*"/>
+
       <label>Avaliador</label>
       <select id="avaliador"></select>
 
@@ -813,9 +849,6 @@
 
       <label>Email</label>
       <input id="email" inputmode="email"/>
-
-      <label>KM Atual (inteiro)</label>
-      <input id="km" inputmode="numeric" pattern="[0-9]*"/>
 
       <div id="statusBasic" class="muted"></div>
 

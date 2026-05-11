@@ -4,6 +4,11 @@ Este projeto é o carro-chefe operacional. A regra é simples: nenhuma melhoria 
 
 ## Ambientes
 
+Projeto Apps Script LAB criado:
+
+- Script ID LAB: `19fnze_8oRtMzzxSRjbUlYnO7Lo8YsCJRFETbvQ8Q_28JVCbTou_q9qy1`
+- Editor LAB: `https://script.google.com/d/19fnze_8oRtMzzxSRjbUlYnO7Lo8YsCJRFETbvQ8Q_28JVCbTou_q9qy1/edit`
+
 Produção usa os IDs padrão que já existiam no código:
 
 - Planilha: `10u4arnqwIH4_W-pwMrYBT6FunZopw0eLj2gl_MfE1QA`
@@ -30,6 +35,33 @@ Se essas propriedades não existirem, o app continua usando os IDs de produção
 5. Publicar o Web App LAB.
 6. Testar no celular real.
 7. Só depois promover as mudanças para `main` e publicar na produção.
+
+## Primeiro Setup do LAB
+
+O código já foi enviado para o projeto Apps Script LAB. Como o `clasp run` pode exigir configuração extra de API executável, o caminho mais seguro é rodar as funções uma vez pelo editor:
+
+1. Abra o editor LAB:
+   `https://script.google.com/d/19fnze_8oRtMzzxSRjbUlYnO7Lo8YsCJRFETbvQ8Q_28JVCbTou_q9qy1/edit`
+2. No seletor de funções, escolha `createLabCopiesFromCurrentConfig`.
+3. Clique em Executar e autorize os acessos solicitados.
+4. Copie o retorno com `spreadsheetId`, `pdfFolderId` e `docTemplateId`.
+5. Depois escolha a função `configureLabEnvironment`.
+6. Execute com o objeto abaixo, trocando os IDs:
+
+```js
+{
+  spreadsheetId: 'ID_DA_PLANILHA_LAB',
+  pdfFolderId: 'ID_DA_PASTA_PDF_LAB',
+  docTemplateId: 'ID_DO_TEMPLATE_LAB',
+  testEmailTo: 'cristianotonyveiculos@gmail.com'
+}
+```
+
+7. Rode `getEnvironmentDiagnostics` e confira:
+   - `env` precisa ser `LAB`
+   - `isLab` precisa ser `true`
+   - os nomes precisam apontar para os arquivos LAB
+   - `emailSettings.testMode` precisa ser `true`
 
 ## Funções de Apoio
 
@@ -74,4 +106,3 @@ Confirme que `env` é `LAB` e que os nomes dos arquivos são os do laboratório.
 - Confirmar linha nova na planilha LAB.
 - Confirmar PDF gerado na pasta LAB.
 - Confirmar e-mail recebido apenas no e-mail de teste.
-

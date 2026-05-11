@@ -721,15 +721,32 @@ function consultarTonyInfocarFicha_(params) {
 }
 
 function getTonyInfocarTokenFicha_() {
-  let token = PropertiesService.getScriptProperties().getProperty('TOKEN_API');
+  const props = PropertiesService.getScriptProperties();
+  let token = props.getProperty('TOKEN_API');
 
   if (!token) {
-    throw new Error('TOKEN_API não encontrado nas Script Properties deste projeto de Avaliação/Ficha Mecânica.');
+    const keys = Object.keys(props.getProperties() || {}).sort().join(', ');
+    throw new Error('TOKEN_API não encontrado nas Script Properties deste projeto de Avaliação/Ficha Mecânica. Propriedades disponíveis: ' + keys);
   }
 
   token = String(token).trim();
   if (/^Token\s+/i.test(token)) token = token.replace(/^Token\s+/i, '').trim();
   return token;
+}
+
+function diagnosticarTokenApi() {
+  const props = PropertiesService.getScriptProperties();
+  const raw = props.getProperty('TOKEN_API') || '';
+  const cleaned = String(raw).replace(/^Token\s+/i, '').trim();
+  const out = {
+    ok: !!cleaned,
+    scriptId: getCurrentScriptId_(),
+    hasTokenApi: !!raw,
+    tokenLength: cleaned.length,
+    propertyKeys: Object.keys(props.getProperties() || {}).sort()
+  };
+  Logger.log(JSON.stringify(out, null, 2));
+  return out;
 }
 
 function normalizeTonyInfocarVehicleResponse_(placa, renavamPayload, fipePayload) {

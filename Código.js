@@ -1,19 +1,41 @@
 // ===== CONFIG =====
-const SPREADSHEET_ID = '10u4arnqwIH4_W-pwMrYBT6FunZopw0eLj2gl_MfE1QA';
+const DEFAULT_SPREADSHEET_ID = '10u4arnqwIH4_W-pwMrYBT6FunZopw0eLj2gl_MfE1QA';
 const SHEET_FICHAS = 'FICHAS';
 const SHEET_CAD = 'CADASTROS';
 
 const CTRL_COLS = ['Status', 'UltimoErro', 'PDF_URL', 'EnviadoEm', 'SubmitKey'];
 const APP_VERSION = 'v2.5-tony-infocar-operacional';
-const TEST_EMAIL_TO = 'cristianotonyveiculos@gmail.com';
+const DEFAULT_TEST_EMAIL_TO = 'cristianotonyveiculos@gmail.com';
 
 // IDs
-const PDF_FOLDER_ID = '1YPyBpBWjKDBH_sl-Q4KTYp6sOKfnE1a_';
-const DOC_TEMPLATE_ID = '1ZTzPhHyEI7dFpgb5yOIFJ190bRr1FJS6moOpjX9eMLI';
+const DEFAULT_PDF_FOLDER_ID = '1YPyBpBWjKDBH_sl-Q4KTYp6sOKfnE1a_';
+const DEFAULT_DOC_TEMPLATE_ID = '1ZTzPhHyEI7dFpgb5yOIFJ190bRr1FJS6moOpjX9eMLI';
 
 // Script Properties
+const PROP_APP_ENV = 'APP_ENV';
+const PROP_SPREADSHEET_ID = 'SPREADSHEET_ID';
+const PROP_PDF_FOLDER_ID = 'PDF_FOLDER_ID';
+const PROP_DOC_TEMPLATE_ID = 'DOC_TEMPLATE_ID';
+const PROP_TEST_EMAIL_TO = 'TEST_EMAIL_TO';
 const PROP_ADMIN_PASSWORD = 'ADMIN_CONFIG_PASSWORD';
 const PROP_EMAIL_SETTINGS = 'EMAIL_ROUTING_SETTINGS';
+
+function getAppConfig_() {
+  const props = PropertiesService.getScriptProperties();
+  const env = String(props.getProperty(PROP_APP_ENV) || 'PROD').trim().toUpperCase();
+  return {
+    env,
+    isLab: env !== 'PROD',
+    spreadsheetId: String(props.getProperty(PROP_SPREADSHEET_ID) || DEFAULT_SPREADSHEET_ID).trim(),
+    pdfFolderId: String(props.getProperty(PROP_PDF_FOLDER_ID) || DEFAULT_PDF_FOLDER_ID).trim(),
+    docTemplateId: String(props.getProperty(PROP_DOC_TEMPLATE_ID) || DEFAULT_DOC_TEMPLATE_ID).trim(),
+    testEmailTo: String(props.getProperty(PROP_TEST_EMAIL_TO) || DEFAULT_TEST_EMAIL_TO).trim()
+  };
+}
+
+function getSpreadsheet_() {
+  return SpreadsheetApp.openById(getAppConfig_().spreadsheetId);
+}
 
 // ===== CACHE =====
 const CATALOGS_CACHE_KEY = 'FM_CATALOGS_V1';
@@ -197,11 +219,14 @@ function getBootstrapData() {
   ensureSheets_();
   ensureControlColumns_();
   ensureEmailSettings_();
+  const cfg = getAppConfig_();
 
   return {
     catalogs: loadCatalogs_(),
     nowISO: new Date().toISOString(),
     appVersion: APP_VERSION,
+    appEnv: cfg.env,
+    isLab: cfg.isLab,
     hasAdminPassword: !!PropertiesService.getScriptProperties().getProperty(PROP_ADMIN_PASSWORD)
   };
 }
@@ -223,7 +248,7 @@ function submitInspection(payload) {
       throw new Error('Chave de envio ausente. Recarregue o app e tente novamente.');
     }
 
-    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const ss = getSpreadsheet_();
     const sh = ss.getSheetByName(SHEET_FICHAS);
 
     const headers = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
@@ -323,7 +348,7 @@ function findRowBySubmitKey_(sh, colSubmitKey, submitKey) {
 
 // ===== PROCESSAMENTO (PDF + EMAIL) =====
 function processRow_(rowNumber, originalPayload) {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const ss = getSpreadsheet_();
   const sh = ss.getSheetByName(SHEET_FICHAS);
 
   const headersRaw = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
@@ -400,7 +425,7 @@ function loadCatalogs_() {
     }
   }
 
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const ss = getSpreadsheet_();
   const sh = ss.getSheetByName(SHEET_CAD);
   const values = sh.getDataRange().getValues();
 
@@ -454,13 +479,13 @@ function resetCatalogsCache() {
 
 // ===== HELPERS =====
 function ensureSheets_() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const ss = getSpreadsheet_();
   if (!ss.getSheetByName(SHEET_CAD)) throw new Error(`Aba ${SHEET_CAD} não existe`);
   if (!ss.getSheetByName(SHEET_FICHAS)) throw new Error(`Aba ${SHEET_FICHAS} não existe`);
 }
 
 function ensureControlColumns_() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const ss = getSpreadsheet_();
   const sh = ss.getSheetByName(SHEET_FICHAS);
 
   const lastCol = Math.max(1, sh.getLastColumn());
@@ -1274,17 +1299,18 @@ function mapSec_(out, p, key, colStatus, colValor, colDesc) {
 
 // ===== PDF =====
 function generatePdfFromRow_(data) {
-  if (!PDF_FOLDER_ID) throw new Error('PDF_FOLDER_ID não configurado.');
-  if (!DOC_TEMPLATE_ID) throw new Error('DOC_TEMPLATE_ID não configurado.');
+  const cfg = getAppConfig_();
+  if (!cfg.pdfFolderId) throw new Error('PDF_FOLDER_ID não configurado.');
+  if (!cfg.docTemplateId) throw new Error('DOC_TEMPLATE_ID não configurado.');
 
-  const folder = DriveApp.getFolderById(PDF_FOLDER_ID);
+  const folder = DriveApp.getFolderById(cfg.pdfFolderId);
 
   const placa = String(data['Placa'] || 'SEMPLACA').toUpperCase();
   const cliente = String(data['Cliente'] || 'CLIENTE').replace(/[^\w\s-]/g,'').trim();
   const stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd_HHmmss');
 
   const tmpName = `TMP_${placa}_${cliente}_${stamp}`;
-  const tmpFile = DriveApp.getFileById(DOC_TEMPLATE_ID).makeCopy(tmpName, folder);
+  const tmpFile = DriveApp.getFileById(cfg.docTemplateId).makeCopy(tmpName, folder);
 
   const doc = DocumentApp.openById(tmpFile.getId());
   replaceAllPlaceholders_(doc, data);
@@ -1429,7 +1455,7 @@ function ensureEmailSettings_() {
   if (!props.getProperty(PROP_EMAIL_SETTINGS)) {
     const defaults = {
       testMode: true,
-      adminEmail: TEST_EMAIL_TO,
+      adminEmail: getAppConfig_().testEmailTo,
       leaderEmail: '',
       analistas: {},
       avaliadores: {}
@@ -1517,7 +1543,7 @@ function normalizeRoutingMap_(obj) {
 
 function resolveRecipients_(data) {
   const cfg = getEmailSettings_();
-  const adminEmail = String(cfg.adminEmail || TEST_EMAIL_TO).trim();
+  const adminEmail = String(cfg.adminEmail || getAppConfig_().testEmailTo).trim();
 
   if (cfg.testMode) {
     return [adminEmail];
@@ -1765,7 +1791,7 @@ function escapeHtml_(str) {
 
 // ===== SETUP CABEÇALHOS =====
 function setupFichasHeaders() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const ss = getSpreadsheet_();
   const sh = ss.getSheetByName(SHEET_FICHAS);
 
   const headers = [
@@ -1796,11 +1822,113 @@ function setupFichasHeaders() {
   sh.setFrozenRows(1);
 }
 
+// ===== LAB / AMBIENTE =====
+function getEnvironmentDiagnostics() {
+  const cfg = getAppConfig_();
+  const out = {
+    ok: true,
+    env: cfg.env,
+    isLab: cfg.isLab,
+    spreadsheetId: cfg.spreadsheetId,
+    pdfFolderId: cfg.pdfFolderId,
+    docTemplateId: cfg.docTemplateId,
+    testEmailTo: cfg.testEmailTo,
+    appVersion: APP_VERSION,
+    spreadsheetName: '',
+    sheets: [],
+    pdfFolderName: '',
+    docTemplateName: '',
+    emailSettings: null
+  };
+
+  try {
+    const ss = getSpreadsheet_();
+    out.spreadsheetName = ss.getName();
+    out.sheets = ss.getSheets().map(s => s.getName());
+  } catch (e) {
+    out.spreadsheetError = String(e && e.message ? e.message : e);
+  }
+
+  try {
+    out.pdfFolderName = DriveApp.getFolderById(cfg.pdfFolderId).getName();
+  } catch (e) {
+    out.pdfFolderError = String(e && e.message ? e.message : e);
+  }
+
+  try {
+    out.docTemplateName = DriveApp.getFileById(cfg.docTemplateId).getName();
+  } catch (e) {
+    out.docTemplateError = String(e && e.message ? e.message : e);
+  }
+
+  try {
+    out.emailSettings = getEmailSettings_();
+  } catch (e) {
+    out.emailSettingsError = String(e && e.message ? e.message : e);
+  }
+
+  return out;
+}
+
+function createLabCopiesFromCurrentConfig() {
+  const cfg = getAppConfig_();
+  const stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd_HHmm');
+  const root = DriveApp.createFolder(`Ficha Mecânica LAB ${stamp}`);
+  const pdfFolder = root.createFolder('PDFs LAB');
+
+  const spreadsheetCopy = DriveApp
+    .getFileById(cfg.spreadsheetId)
+    .makeCopy(`Ficha Mecânica LAB ${stamp}`, root);
+
+  const templateCopy = DriveApp
+    .getFileById(cfg.docTemplateId)
+    .makeCopy(`Template Ficha Mecânica LAB ${stamp}`, root);
+
+  return {
+    ok: true,
+    message: 'Cópias LAB criadas. Use estes IDs no projeto Apps Script LAB.',
+    rootFolderId: root.getId(),
+    spreadsheetId: spreadsheetCopy.getId(),
+    pdfFolderId: pdfFolder.getId(),
+    docTemplateId: templateCopy.getId()
+  };
+}
+
+function configureLabEnvironment(config) {
+  const spreadsheetId = String(config?.spreadsheetId || '').trim();
+  const pdfFolderId = String(config?.pdfFolderId || '').trim();
+  const docTemplateId = String(config?.docTemplateId || '').trim();
+  const testEmailTo = String(config?.testEmailTo || DEFAULT_TEST_EMAIL_TO).trim();
+
+  if (!spreadsheetId) throw new Error('Informe spreadsheetId para configurar o LAB.');
+  if (!pdfFolderId) throw new Error('Informe pdfFolderId para configurar o LAB.');
+  if (!docTemplateId) throw new Error('Informe docTemplateId para configurar o LAB.');
+
+  const props = PropertiesService.getScriptProperties();
+  props.setProperty(PROP_APP_ENV, 'LAB');
+  props.setProperty(PROP_SPREADSHEET_ID, spreadsheetId);
+  props.setProperty(PROP_PDF_FOLDER_ID, pdfFolderId);
+  props.setProperty(PROP_DOC_TEMPLATE_ID, docTemplateId);
+  props.setProperty(PROP_TEST_EMAIL_TO, testEmailTo);
+
+  saveEmailSettings_({
+    testMode: true,
+    adminEmail: testEmailTo,
+    leaderEmail: '',
+    analistas: {},
+    avaliadores: {}
+  });
+  clearCatalogsCache_();
+
+  return getEnvironmentDiagnostics();
+}
+
 // ===== AUTORIZAÇÃO =====
 function authorizeNow() {
-  DriveApp.getFolderById(PDF_FOLDER_ID).getName();
-  DocumentApp.openById(DOC_TEMPLATE_ID).getBody().getText();
-  MailApp.sendEmail(TEST_EMAIL_TO, "Auth Test", "ok");
+  const cfg = getAppConfig_();
+  DriveApp.getFolderById(cfg.pdfFolderId).getName();
+  DocumentApp.openById(cfg.docTemplateId).getBody().getText();
+  MailApp.sendEmail(cfg.testEmailTo, "Auth Test", "ok");
   UrlFetchApp.fetch('https://api.tonyveiculos.com.br', { muteHttpExceptions: true });
 }
 
@@ -1809,7 +1937,7 @@ function setupDefaultAdminConfig() {
   PropertiesService.getScriptProperties().setProperty(PROP_ADMIN_PASSWORD, '123456');
   saveEmailSettings_({
     testMode: true,
-    adminEmail: TEST_EMAIL_TO,
+    adminEmail: getAppConfig_().testEmailTo,
     leaderEmail: '',
     analistas: {},
     avaliadores: {}

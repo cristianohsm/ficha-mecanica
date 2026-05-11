@@ -75,6 +75,24 @@
       min-height:60px;
     }
 
+    .envBanner{
+      display:none;
+      position:sticky;
+      top:60px;
+      z-index:99;
+      background:#fff2b8;
+      color:#111;
+      border-bottom:1px solid #e2c85c;
+      padding:8px 16px;
+      font-size:13px;
+      font-weight:900;
+      text-align:center;
+    }
+
+    body.isLab .envBanner{
+      display:block;
+    }
+
     .appbarTitle{
       min-width:0;
       flex:1;
@@ -684,6 +702,8 @@
     </div>
   </div>
 
+  <div id="envBanner" class="envBanner"></div>
+
   <div class="wrap">
     <div id="screenBasic" class="card">
       <div class="title">Dados básicos</div>
@@ -976,6 +996,8 @@
 <script>
   let catalogs = {};
   let appVersion = 'v1';
+  let appEnv = 'PROD';
+  let isLab = false;
   let sending = false;
   let adminSessionPassword = '';
   let adminSettings = null;
@@ -1019,6 +1041,14 @@
 
   function getCatalogList_(key){
     return catalogs[key] || catalogs[String(key || '').toLowerCase()] || catalogs[String(key || '').toUpperCase()] || [];
+  }
+
+  function applyEnvironmentUi_(){
+    document.body.classList.toggle('isLab', !!isLab);
+    const banner = $('envBanner');
+    if (banner) {
+      banner.textContent = isLab ? `AMBIENTE DE TESTE - ${appEnv}` : '';
+    }
   }
 
   function applyFontScale(scale){
@@ -1534,6 +1564,9 @@
     google.script.run.withSuccessHandler(data=>{
       catalogs = data.catalogs || {};
       appVersion = data.appVersion || 'v1';
+      appEnv = data.appEnv || 'PROD';
+      isLab = !!data.isLab;
+      applyEnvironmentUi_();
 
       fillSelect('avaliador', getCatalogList_('Avaliador').length ? getCatalogList_('Avaliador') : getCatalogList_('avaliador'));
       fillSelect('analista', getCatalogList_('analistas').length ? getCatalogList_('analistas') : (getCatalogList_('Analista').length ? getCatalogList_('Analista') : getCatalogList_('analista')));
@@ -1574,7 +1607,7 @@
       } else if (!analistasCount) {
         $('statusBasic').textContent = 'Não foi possível carregar analistas da aba CADASTROS.';
       } else {
-        $('statusBasic').textContent = `App ${appVersion} | Catálogos: ${Object.keys(catalogs).length}`;
+        $('statusBasic').textContent = `App ${appVersion} | Ambiente: ${appEnv} | Catálogos: ${Object.keys(catalogs).length}`;
       }
 
       setScreen_('basic');
@@ -2840,7 +2873,7 @@
     $('vehicleFieldsWrap').classList.add('hidden');
     refreshVehiclePreview_();
 
-    $('statusBasic').textContent = 'App ' + appVersion + ' | Catálogos: ' + Object.keys(catalogs).length;
+    $('statusBasic').textContent = 'App ' + appVersion + ' | Ambiente: ' + appEnv + ' | Catálogos: ' + Object.keys(catalogs).length;
     $('statusSave').textContent = '';
     $('reviewStatus').textContent = '';
 

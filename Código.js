@@ -622,7 +622,9 @@ function prefetchVehicleByPlateTonyInfocar(input) {
   }
 
   const fetched = fetchVehicleByPlateTonyInfocar_(placa);
-  setTonyInfocarPlateCache_(cacheKey, fetched);
+  if (fetched?.ok && fetched?.normalized?.found) {
+    setTonyInfocarPlateCache_(cacheKey, fetched);
+  }
 
   return {
     ok: fetched.ok,
@@ -928,6 +930,20 @@ function escapeRegExp_(s) {
 
 function buildTonyInfocarPlateCacheKey_(placa) {
   return 'TONY_INFOCAR_PLATE_' + normalizePlaca_(placa || '');
+}
+
+function clearTonyInfocarPlateCache(placa) {
+  const placaNorm = normalizePlaca_(placa || '');
+  if (!placaNorm) throw new Error('Informe uma placa para limpar o cache.');
+  CacheService.getScriptCache().remove(buildTonyInfocarPlateCacheKey_(placaNorm));
+  return 'Cache da placa ' + placaNorm + ' limpo.';
+}
+
+function testarConsultaPlacaFichaFml() {
+  clearTonyInfocarPlateCache('FML6G64');
+  const r = suggestVehicleFieldsFromPlate({ placa: 'FML6G64' });
+  Logger.log(JSON.stringify(r, null, 2));
+  return r;
 }
 
 function getTonyInfocarPlateCache_(key) {

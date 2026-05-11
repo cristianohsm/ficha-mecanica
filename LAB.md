@@ -42,22 +42,10 @@ O código já foi enviado para o projeto Apps Script LAB. Como o `clasp run` pod
 
 1. Abra o editor LAB:
    `https://script.google.com/d/19fnze_8oRtMzzxSRjbUlYnO7Lo8YsCJRFETbvQ8Q_28JVCbTou_q9qy1/edit`
-2. No seletor de funções, escolha `createLabCopiesFromCurrentConfig`.
+2. No seletor de funções, escolha `createAndConfigureLabFromCurrentConfig`.
 3. Clique em Executar e autorize os acessos solicitados.
-4. Copie o retorno com `spreadsheetId`, `pdfFolderId` e `docTemplateId`.
-5. Depois escolha a função `configureLabEnvironment`.
-6. Execute com o objeto abaixo, trocando os IDs:
-
-```js
-{
-  spreadsheetId: 'ID_DA_PLANILHA_LAB',
-  pdfFolderId: 'ID_DA_PASTA_PDF_LAB',
-  docTemplateId: 'ID_DO_TEMPLATE_LAB',
-  testEmailTo: 'cristianotonyveiculos@gmail.com'
-}
-```
-
-7. Rode `getEnvironmentDiagnostics` e confira:
+4. A função vai criar cópias da planilha/template, criar a pasta de PDFs LAB e configurar este projeto como LAB.
+5. Rode `getEnvironmentDiagnostics` e confira:
    - `env` precisa ser `LAB`
    - `isLab` precisa ser `true`
    - os nomes precisam apontar para os arquivos LAB
@@ -68,6 +56,7 @@ O código já foi enviado para o projeto Apps Script LAB. Como o `clasp run` pod
 No Apps Script, existem funções manuais para ajudar:
 
 - `createLabCopiesFromCurrentConfig()`: cria cópias da planilha e template atuais, além de uma pasta de PDFs LAB. Retorna os IDs para configurar o LAB.
+- `createAndConfigureLabFromCurrentConfig()`: cria as cópias e já configura o projeto Apps Script LAB.
 - `configureLabEnvironment(config)`: configura um projeto Apps Script como LAB usando IDs informados.
 - `getEnvironmentDiagnostics()`: mostra para onde o app está apontando, nomes dos arquivos/pastas e configurações principais.
 

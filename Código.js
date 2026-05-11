@@ -5,6 +5,7 @@ const SHEET_CAD = 'CADASTROS';
 
 const CTRL_COLS = ['Status', 'UltimoErro', 'PDF_URL', 'EnviadoEm', 'SubmitKey'];
 const APP_VERSION = 'v2.5-tony-infocar-operacional';
+const DEFAULT_PROD_SCRIPT_ID = '1MPvCAkwSsVeauToomA18zwVLC2iINk-GdQQ9_YN3_j2JHT2tdnoZKa7R';
 const DEFAULT_TEST_EMAIL_TO = 'cristianotonyveiculos@gmail.com';
 
 // IDs
@@ -35,6 +36,14 @@ function getAppConfig_() {
 
 function getSpreadsheet_() {
   return SpreadsheetApp.openById(getAppConfig_().spreadsheetId);
+}
+
+function getCurrentScriptId_() {
+  try {
+    return ScriptApp.getScriptId();
+  } catch (e) {
+    return '';
+  }
 }
 
 // ===== CACHE =====
@@ -1834,6 +1843,7 @@ function getEnvironmentDiagnostics() {
     docTemplateId: cfg.docTemplateId,
     testEmailTo: cfg.testEmailTo,
     appVersion: APP_VERSION,
+    currentScriptId: getCurrentScriptId_(),
     spreadsheetName: '',
     sheets: [],
     pdfFolderName: '',
@@ -1894,7 +1904,25 @@ function createLabCopiesFromCurrentConfig() {
   };
 }
 
+function createAndConfigureLabFromCurrentConfig() {
+  if (getCurrentScriptId_() === DEFAULT_PROD_SCRIPT_ID) {
+    throw new Error('Segurança: não execute esta função no projeto operacional. Use o Apps Script LAB.');
+  }
+
+  const ids = createLabCopiesFromCurrentConfig();
+  return configureLabEnvironment({
+    spreadsheetId: ids.spreadsheetId,
+    pdfFolderId: ids.pdfFolderId,
+    docTemplateId: ids.docTemplateId,
+    testEmailTo: getAppConfig_().testEmailTo
+  });
+}
+
 function configureLabEnvironment(config) {
+  if (getCurrentScriptId_() === DEFAULT_PROD_SCRIPT_ID) {
+    throw new Error('Segurança: não configure o projeto operacional como LAB.');
+  }
+
   const spreadsheetId = String(config?.spreadsheetId || '').trim();
   const pdfFolderId = String(config?.pdfFolderId || '').trim();
   const docTemplateId = String(config?.docTemplateId || '').trim();
